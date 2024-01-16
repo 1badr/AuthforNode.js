@@ -1,7 +1,15 @@
 const mongoose = require ('mongoose');
 const { default: isEmail } = require('validator/lib/isemail');
 const bcrypt = require ('bcrypt');
+const { isInteger } = require('lodash');
+const { v4: uuidv4 } = require('uuid');
+
+const uuid = uuidv4();
+
 const userSchema = new mongoose.Schema ({
+    _id: {
+        type: String, default: uuidv4 
+       },
     email : {
         type : String,
         required : [true,'email is required'],
@@ -13,7 +21,33 @@ const userSchema = new mongoose.Schema ({
         type : String ,
         require : [true,'pass is required'],
         minLength : [6,'mini is 6'],
-    }
+    },
+    name : {
+        type: String,
+        required: [true, 'name is required'],
+        minlength: [1, 'Mini is 1'],
+        maxlength: [30, 'Max is 30'],
+    },
+    type : {
+        type: String,
+    },
+    location : {
+        type : String,
+        minLength: [1, 'mini is 20'],
+    },
+    image : {
+        type : String,
+    },
+    bio : {
+        type : String,
+    },
+    star : {
+        type: Boolean
+    },
+    posts: [{type: mongoose.Types.ObjectId, ref: "Posts", required: true}],
+    comment: [{type: mongoose.Types.ObjectId, ref: "Comments", required: true}],
+    followers: [{type: String, ref: "Followers", required: true}],
+
 })
 
 userSchema.post('save', function (doc,next){
@@ -27,7 +61,7 @@ userSchema.pre('save', async function(next){
     next();
 });
 
-userSchema.statics.login = async function(email,password){
+userSchema.statics.login = async function(email,password,name){
     const user = await this.findOne({ email});
     if (user){
         const auth = await bcrypt.compare(password,user.password);

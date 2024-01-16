@@ -3,35 +3,37 @@ const User = require ('../models/User');
 const {isEmail} = require ('validator'); 
 const jwt =require('jsonwebtoken');
 
-const handleErrors = (err) =>{
-    console.log(err.message,err.code);
-    let errors = {email: '',password:''};
 
-    if (err.code === 'incorrect email'){
-        errors.email = 'this email is not registed';
-    }
-    
-    if (err.code === 'incorrect password'){
-        errors.email = 'this password is incorrect';
-    }
-    
-    if (err.code === 11000){
-        errors.email = 'this email is used'
-        return errors; 
-    }
 
-    if (err.message.includes( 'user validation failed')){
-        Object.values(err.error).forEach(({properties})=>{
-            errors[properties.path] = properties.message
+const handleErrors = (err) => {
+    console.log(err.message, err.code);
+    let errors = { email: '', password: '' , name: ''};
+  
+    if (err.code === 'incorrect email') {
+      errors.email = 'This email is not registered';
+    }
+  
+    if (err.code === 'incorrect password') {
+      errors.email = 'This password is incorrect';
+    }
+  
+    if (err.code === 11000) {
+      errors.email = 'This email is already in use';
+      return errors;
+    }
+  
+    if (err.message.includes('user validation failed')) {
+      if (err.errors) {
+        Object.values(err.errors).forEach(({ properties }) => {
+          errors[properties.path] = properties.message;
         });
-        return errors
-    
-        
+      }
+      return errors;
     }
-}
+  };
 const maxAge = 3*24*60*60 // in secondes , cookie in millie seconds
 const createToken =(id) =>{
-    return jwt.sign({id},'badr is legend',{
+    return jwt.sign({id},'badrIsLegend',{
     expiresIn:maxAge
     });
 }
@@ -44,10 +46,10 @@ module.exports.login_get = (req,res) => {
 }
 
 module.exports.signup_post = async (req,res) => {
-    const { email , password} = req.body;
+    const { email , password , name} = req.body;
     
     try {
-        let user = await User.create({ email , password});
+        let user = await User.create({ email , password ,name});
         const token = createToken(user._id);
         res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000});
         res.status(201).json({user:user._id});
@@ -60,10 +62,10 @@ module.exports.signup_post = async (req,res) => {
 }
 
 module.exports.login_post = async (req,res) => {
-    const { email , password} = req.body
+    const { email , password, name} = req.body
     
     try{
-        const user = await User.login(email,password);
+        const user = await User.login(email,password,name);
         const token = createToken(user._id);
         res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000});
         res.status(200).json({user:user._id});
@@ -79,3 +81,5 @@ module.exports.logout_get = (req,res)=>{
     return res.json();
 
 }
+
+
