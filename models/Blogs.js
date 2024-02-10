@@ -13,10 +13,12 @@ const BlogsSchema = new mongoose.Schema ({
         type : String,
         require : true,
     },
-    author : [{type: mongoose.Types.ObjectId,ref: ["User"],ref: ["Company"], required: true}],
-    comment: [{type: mongoose.Types.ObjectId, ref: "Comment", required: true}],
+    author : {type: String,ref: "User" },
+    comment: {type:String, ref: "Comment"},
 
 });
 const Blogs = mongoose.model('Blogs', BlogsSchema);
 
 module.exports = Blogs;
+
+

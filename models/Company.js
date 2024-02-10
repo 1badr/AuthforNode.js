@@ -7,16 +7,16 @@ const CompanySchema = new mongoose.Schema ({
     },
     address : {
         type : String,
-        require: [true, 'address is required'],
+        require: ['address is required'],
     },
     password : {
         type : String ,
-        require : [true,'pass is required'],
+        require : ['pass is required'],
         minLength : [6,'mini is 6'],
     },
     email : {
         type : String,
-        required : [true,'email is required'],
+        required : ['email is required'],
         unique : true,
         lowercase : true,
         validate:[isEmail,'valid email please'],
@@ -37,7 +37,8 @@ const CompanySchema = new mongoose.Schema ({
     categorey : {
         type : String,
     },
-    comment: [{type: mongoose.Types.ObjectId, ref: "Comments", required: true}],
+    
+    comment: [{type: String, ref: "Comments"}],
 
 });
 const Company = mongoose.model('Company', CompanySchema);

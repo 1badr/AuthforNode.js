@@ -14,6 +14,11 @@ const searchRoutes = require('./routes/searchRoutes');
 const CommunityRoutes = require('./routes/CommunityRoutes');
 const voteRoute = require('./routes/voteRoute');
 const followersRoute = require('./routes/followersRoute');
+const conversationRoute = require("./routes/conversationsRoutes");
+const messageRoute = require("./routes/messagesRoutes");
+const NotificationRealTimeRoute = require("./routes/NotificationRealTimeController");
+const CompanyRoutes = require("./routes/CompanyRoutes");
+const favRoutes = require("./routes/favRoutes");
 
 
 
@@ -45,6 +50,11 @@ app.use('/search',searchRoutes);
 app.use('/comm',CommunityRoutes);
 app.use('/vote',voteRoute);
 app.use('/follo',followersRoute);
+app.use('/conversation',conversationRoute);
+app.use('/message',messageRoute);
+app.use('/NotificationRealTimeRoute',NotificationRealTimeRoute);
+app.use('/Company',CompanyRoutes);
+app.use('/fav',favRoutes);
 
 
 
@@ -69,29 +79,101 @@ app.get("/users", (req, res) => {
 
 
 /**================================================== */
-var io = require("socket.io")(server);
+const io = require("socket.io")(8000, {
+  
+});
 
-var clients ={};
+let users = [];
 
-io.on('connection', (socket) =>{
-  console.log('connected');
-  console.log(socket.id ,"has join");
-  socket.on('signin',(id) =>{
-    console.log(id);
-    clients[id] = socket;
-    console.log(clients);
+const addUser = (userId, socketId) => {
+  !users.some((user) => user.userId === userId) &&
+    users.push({ userId, socketId });
+};
+
+const removeUser = (socketId) => {
+  users = users.filter((user) => user.socketId !== socketId);
+};
+
+const getUser = (userId) => {
+  return users.find((user) => user.userId === userId);
+};
+
+io.on("connection", (socket) => {
+  //when ceonnect
+  console.log("a user connected.");
+
+  //take userId and socketId from user
+  socket.on("addUser", (userId) => {
+    addUser(userId, socket.id);
+    io.emit("getUsers", users);
   });
-  socket.on('message', (msg) =>{
-    console.log(msg)
-    let targetID = msg.targetID;
-    if (clients[targetID]) clients[targetID].emit('message',msg);
+
+  //send and get message
+  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
+    const user = getUser(receiverId);
+    io.to(user.socketId).emit("getMessage", {
+      senderId,
+      text,
+    });
+  });
+
+  //when disconnect
+  socket.on("disconnect", () => {
+    console.log("a user disconnected!");
+    removeUser(socket.id);
+    io.emit("getUsers", users);
+  });
+});
+
+/**================================================== */
+
+/*======================================================*/
+let notifications = [];
+
+const addNotification = (notificationId, socketId) => {
+  !notifications.some((notification) => notification.notificationId === notificationId) &&
+    notifications.push({ notificationId, socketId });
+};
+
+const removeNotification = (socketId) => {
+  notifications = notifications.filter((notification) => notification.socketId !== socketId);
+};
+
+const getNotification = (notificationId) => {
+  return notifications.find((notification) => notification.notificationId === notificationId);
+};
+
+io.on("connection", (socket) => {
+  // عند الاتصال
+  console.log("تم اتصال مستخدم.");
+
+  // استقبال إشعار جديد
+  socket.on("addNotification", (notificationId) => {
+    addNotification(notificationId, socket.id);
+    io.emit("getNotifications", notifications);
+  });
+
+  // إرسال واستقبال الإشعارات
+  socket.on("sendNotification", ({ userId, companyId, text }) => {
+    const notification = getNotification(receiverId);
+    io.to(notification.socketId).emit("receiveNotification", {
+      senderId,
+      text,
+    });
+  });
+
+  // عند الانفصال
+  socket.on("disconnect", () => {
+    console.log("تم انفصال مستخدم!");
+    removeNotification(socket.id);
+    io.emit("getNotifications", notifications);
   });
 });
 
 
-/**================================================== */
 
 
+/*======================================================*/
 
 
 

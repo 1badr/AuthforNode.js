@@ -16,13 +16,20 @@ const deleteCategorey = (req,res) => {
   })
 };
 
+
 const postCategorey = async (req, res) => {
-    const Categoreys = new Categorey(req.body);
-    Categoreys.save()
+  const categoryData = req.body;
+
+  if (['Program', 'Desgin', 'Medical', 'Mangment'].includes(categoryData.name)) {
+    const category = new Categorey(categoryData);
+    category.save()
       .then((result) => {
-        res.status(201).json({ Categoreys: Categoreys._id });
+        res.status(201).json({ category: category._id });
       });
-  };
+  } else {
+    res.status(400).json({ error: 'Invalid category name' });
+  }
+};
 
 
   const ubdateblog = (req, res) => {
@@ -38,11 +45,52 @@ const postCategorey = async (req, res) => {
     });
 };
 
+const getAllCategories = async (req, res) => {
+  try {
+    const categories = await Categorey.find({});
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch categories' });
+  }
+};
+
+
+const getCategoryById = async (req, res) => {
+  const categoryId = req.params.id;
+
+  try {
+    const category = await Categorey.findOne({ _id: categoryId });
+
+    if (category) {
+      res.json(category);
+    } else {
+      res.status(404).json({ error: 'Category not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch category' });
+  }
+};
+
+
+const getCategoriesByEnum = async (req, res) => {
+  const enumValue = req.params
+
+  try {
+    const categories = await Categorey.find({ name: enumValue });
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ error: 'فشل في استرداد التصنيفات' });
+  }
+};
+
 
 
 module.exports = {
     postCategorey,
     deleteCategorey,
-    ubdateblog
+    ubdateblog,
+    getAllCategories,
+    getCategoryById,
+    getCategoriesByEnum
 }
 

@@ -12,18 +12,19 @@ const AllUsers = async (req,res) => {
 };
 
 
+const getuser = async (req, res) => {
+  const id = req.params.id;
 
-const getuser = async (req,res) => {
-  const id = req.params.id ;
-
-  User.findById(id)
-  .then(result => {
-    console.log("found")
-    res.status(200).json(id);
-  })
-  .catch(err => {
-    console.log(err);
-  })
+  try {
+    const user = await User.findById(id);
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ error: 'المستخدم غير موجود' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 

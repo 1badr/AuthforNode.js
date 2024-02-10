@@ -55,7 +55,25 @@ const followUser = async (req, res) => {
   }
 }
 
+
+const getUserFollowers = async (req, res) => {
+  const userId = req.params.id;
+  
+  try {
+  const user = await User.findById(userId).populate('blog');
+  if (user) {
+  const blogs = user.followers;
+  res.status(200).json(blogs);
+  } else {
+  res.status(404).json({ error: 'المستخدم غير موجود' });
+  }
+  } catch (error) {
+  res.status(500).json({ error: error.message });
+  }
+  };
+
 module.exports =
 {
   followUser,
+  getUserFollowers
 }

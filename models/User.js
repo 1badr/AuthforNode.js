@@ -38,15 +38,21 @@ const userSchema = new mongoose.Schema ({
     image : {
         type : String,
     },
+    gender: {
+        type: String,
+        enum: ['male', 'female'],
+      },
     bio : {
         type : String,
     },
-    star : {
-        type: Boolean
-    },
+    CreateAt : {
+         type: Date, default: Date.now 
+        },
     posts: [{type: mongoose.Types.ObjectId, ref: "Posts", required: true}],
     comment: [{type: mongoose.Types.ObjectId, ref: "Comments", required: true}],
     followers: [{type: String, ref: "Followers", required: true}],
+    blog: [{type: String, ref: "Blogs", required: true}],
+
 
 })
 

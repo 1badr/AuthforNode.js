@@ -3,15 +3,15 @@ const Schema = mongoose.Schema;
 
 const NotificationsSchema = new Schema({
 	user: {
-		type: Schema.Types.ObjectId,
+		type: String,
 		ref: 'User' // استبدل 'User' بنموذج المستخدم الصحيح
 	},
 	company: {
-		type: Schema.Types.ObjectId,
+		type: String,
 		ref: 'Company'
 	},
-	desc: String,
-	read: Boolean,
+	desc:{ String},
+	read: {Boolean},
 	createdTimestamp: {
 		type: Date,
 		default: Date.now

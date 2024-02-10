@@ -26,8 +26,36 @@ const deleteComment = (req,res) => {
 
 
 
+const getArticleComments = async (req, res) => {
+  const articleId = req.params.id;
+
+  try {
+    const comments = await Comment.find({ article: articleId }).populate('commenterName', 'name');
+
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+const getUserComments = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const comments = await Comment.find({ commenterName: userId });
+
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
     postComment,
-    deleteComment
+    deleteComment,
+    getUserComments,
+    getArticleComments
 }
 

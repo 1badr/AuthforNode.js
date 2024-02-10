@@ -5,7 +5,9 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const Noti = require ('../models/Notifications');
 const CV = require ('../models/CV');
-
+const User = require ('../models/User');
+const Jobs = require('../models/Jobs');
+const Requests = require('../models/Requests')
 const server = require("http").createServer();
 
 /* Queries the db to fetch the count of all unread notifications */
@@ -21,80 +23,6 @@ const getNotificationsCount = async (req,res) => {
 		console.log(e.message)
 	  }
 	};
-	  
-function startServer() {
-	const http = require("http").createServer();
-	const io = require("socket.io")(http);
-  
-	http.listen(3001, function() {
-	  console.log("Connected");
-	});
-	io.on("connection", function(socket) {
-		console.log("Auth value: " + socket.id);
-	  
-		socket.on("sendNotification", function(data) {
-		  const CompanyID = data.CompanyID;
-		  const details = data.CV;
-		  console.log("Send CV");
-	  
-		  io.to(CompanyID).emit("sendNotification", details);
-		});
-	  });
-  }
-  
-
-const notiJob = () => {
-	
-io.on("connection", (socket) => {
-	console.log("Connected: " + socket.id);
-  
-	socket.on("acceptRequest", (requestId) => {
-
-		socket.on("rejectRequest", (requestId) => {
-			Notifications.findOneAndUpdate(
-				{ _id: notificationId }, 
-				{ accepted: true }, 
-				{ new: true }
-			  )
-			  .then(updatedNotification => {
-				console.log("تم تحديث حالة الإشعار بنجاح",updatedNotification);
-			  })
-			  .catch(error => {
-				console.error("حدث خطأ أثناء تحديث الحالة", error);
-			  });
-		  io.to(requestId).emit("notification", "تم رفض طلبك.");
-		});	  io.to(requestId).emit("notification", "تم قبول طلبك.");
-	});
-  
-	socket.on("rejectRequest", (requestId) => {
-
-		socket.on("rejectRequest", (requestId) => {
-			Notifications.findOneAndUpdate(
-				{ _id: notificationId }, 
-				{ accepted: false }, 
-				{ new: true }
-			  )
-			  .then(updatedNotification => {
-				console.log("تم تحديث حالة الإشعار بنجاح",updatedNotification);
-			  })
-			  .catch(error => {
-				console.error("حدث خطأ أثناء تحديث الحالة", error);
-			  });
-
-		  io.to(requestId).emit("notification", "تم رفض طلبك.");
-		});	  io.to(requestId).emit("notification", "تم رفض طلبك.");
-	});
-  
-	socket.on("disconnect", () => {
-	  console.log("Disconnected: " + socket.id);
-	});
-  });
-  
-  server.listen(3002, () => {
-	console.log("noti job is connect ");
-  });
-	
-}
 
 
 const deleteNoti = (req,res) => {
@@ -120,10 +48,21 @@ const deleteNoti = (req,res) => {
   }
 };
 
+const sendCVs = async (req, res) => {
+	const newRqeuest = new Requests(req.body);
+
+  try {
+    const savedMessage = await newRqeuest.save();
+    res.status(200).json(savedMessage);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+
 module.exports = {
 	getNotificationsCount,
-	startServer,
-	notiJob,
 	deleteNoti,
 	AllNoti,
+	sendCVs,
 };

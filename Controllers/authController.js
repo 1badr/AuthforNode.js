@@ -61,6 +61,27 @@ module.exports.signup_post = async (req,res) => {
     }
 }
 
+
+
+module.exports.signupCompany = async (req,res) => {
+  const { email , password , name,categorey,image,location,phone,createAt} = req.body;
+  
+  try {
+      let user = await User.create({  email , password , name,categorey,image,location,phone,createAt});
+      const token = createToken(user._id);
+      res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000});
+      res.status(201).json({user:user._id});
+  }
+  catch (err){
+      let error = handleErrors(err)
+      res.status(400).json({error})
+
+  }
+}
+
+
+
+
 module.exports.login_post = async (req,res) => {
     const { email , password, name} = req.body
     
@@ -83,3 +104,55 @@ module.exports.logout_get = (req,res)=>{
 }
 
 
+module.exports.getUserImageById = async function (req, res) {
+  try {
+    const userId = req.params.id; // استلام معرّف الهوية (ID) للمستخدم من طلب العميل
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'المستخدم غير موجود' });
+    }
+
+    const userImage = user.image;
+    res.json(userImage);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+
+module.exports.getUserNameById = async function (req, res) {
+  try {
+    const userId = req.params.id; // استلام معرّف الهوية (ID) للمستخدم من طلب العميل
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'المستخدم غير موجود' });
+    }
+
+    const userName = user.name;
+    res.json(userName);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
+module.exports.getUserNameById = async function (req, res) {
+  try {
+    const userId = req.params.id; // استلام معرّف الهوية (ID) للمستخدم من طلب العميل
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'المستخدم غير موجود' });
+    }
+
+    const userName = user.name;
+    res.json(userName);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

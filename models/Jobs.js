@@ -1,7 +1,7 @@
 const mongoose = require ('mongoose');
 
 const JobsSchema = new mongoose.Schema ({
-    IDUser: [{type: mongoose.Types.ObjectId, ref: "Company", required: true}],
+    IDUser: {type: String, ref: "User"},
     name : {
         type : String,
     },
@@ -12,15 +12,32 @@ const JobsSchema = new mongoose.Schema ({
     bio : {
         type : String,
     },
+    workSchedule: {
+        type: String,
+        enum: ['PART_TIME', 'FULL_TIME'],
+        required: true
+    },
+    type: {
+        type: String,
+        enum: ['Remote', 'immanence'],
+        required: true
+    },
     salary : {
         type : String,
     },
-    education: [{type: Array , required: true}],
-    experience: [{type: Array , required: true}],
-    skills: [{type: Array , required: true}],
-    certificate: [{type: Array , required: true}],
-    comment: [{type: mongoose.Types.ObjectId, ref: "Comment", required: true}],
-    IDUser: [{type: mongoose.Types.ObjectId, ref: "Company", required: true}],
+    CVs: {
+        type : String, ref: "CV",
+    },
+    education: {
+        type: String,
+        enum: ['بكالوريوس', 'ثانوية عامة', 'ماجستير', 'دكتوراه'],
+        required: true
+      },
+    experience: {type: Array },
+    skills: {type: Array },
+    certificate: {type: Array },
+    comment: {type: String, ref: "Comment"},
+    requestsId: {type: String, ref: "Requests"},
 
 });
 const Jobs = mongoose.model('Jobs', JobsSchema);

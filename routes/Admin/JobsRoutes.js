@@ -6,6 +6,8 @@ router.delete('/delete/:id', jobsController.deleteJobs);
 router.post('/create', jobsController.postJobs);
 router.get('/all-jobs', jobsController.allJobs);
 router.put('/updateJob/:id', jobsController.updateJob);
+router.get('/getAllRequestsJobs/:id', jobsController.getAllRequestsJobs);
+router.get('/getLatestJobs', jobsController.getLatestJobs);
 
 module.exports = router;
 
