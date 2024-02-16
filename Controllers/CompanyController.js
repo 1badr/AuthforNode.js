@@ -8,9 +8,10 @@ const getTopFollowedCompanies = async (req, res) => {
 
     const companyData = companies.map((company) => {
       return {
-        name: company.name,
-        image: company.image,
-        followers: company.followers,
+        name: User.name,
+        image: User.image,
+        followers: User.followers,
+        id: User._id
       };
     });
 

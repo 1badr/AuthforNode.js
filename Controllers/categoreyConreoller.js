@@ -50,7 +50,7 @@ const getAllCategories = async (req, res) => {
     const categories = await Categorey.find({});
     res.json(categories);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch categories' });
+    res.status(500).json({ error: 'Not Found' });
   }
 };
 
@@ -67,7 +67,7 @@ const getCategoryById = async (req, res) => {
       res.status(404).json({ error: 'Category not found' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch category' });
+    res.status(500).json({ error: 'Not Found' });
   }
 };
 
@@ -79,7 +79,7 @@ const getCategoriesByEnum = async (req, res) => {
     const categories = await Categorey.find({ name: enumValue });
     res.json(categories);
   } catch (error) {
-    res.status(500).json({ error: 'فشل في استرداد التصنيفات' });
+    res.status(500).json({ error: 'Not Found' });
   }
 };
 

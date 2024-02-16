@@ -8,6 +8,7 @@ router.get('/all-jobs', jobsController.allJobs);
 router.put('/updateJob/:id', jobsController.updateJob);
 router.get('/getAllRequestsJobs/:id', jobsController.getAllRequestsJobs);
 router.get('/getLatestJobs', jobsController.getLatestJobs);
+router.get('/getJobById/:id', jobsController.getJobById);
 
 module.exports = router;
 

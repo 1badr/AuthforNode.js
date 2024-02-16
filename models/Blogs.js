@@ -1,24 +1,31 @@
-const mongoose = require ('mongoose');
+const mongoose = require('mongoose');
 
-const BlogsSchema = new mongoose.Schema ({
-    title : {
-        type : String,
-        require : true,
+const BlogsSchema = new mongoose.Schema({
+  title: {
+    type: String,
+  },
+  header: {
+    type: String,
+  },
+  body: {
+    type: String,
+  },
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Like',
     },
-    header : {
-        type : String,
-        require : true,
-    },
-    body : {
-        type : String,
-        require : true,
-    },
-    author : {type: String,ref: "User" },
-    comment: {type:String, ref: "Comment"},
-
+  ],
+  author: {
+    type: String,
+    ref: 'User',
+  },
+  comment: {
+    type: String,
+    ref: 'Comment',
+  },
 });
+
 const Blogs = mongoose.model('Blogs', BlogsSchema);
 
 module.exports = Blogs;
-
-

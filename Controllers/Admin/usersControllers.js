@@ -20,7 +20,7 @@ const getuser = async (req, res) => {
     if (user) {
       res.status(200).json(user);
     } else {
-      res.status(404).json({ error: 'المستخدم غير موجود' });
+      res.status(404).json({ error: 'Not Found' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });

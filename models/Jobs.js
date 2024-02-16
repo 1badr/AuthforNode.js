@@ -15,7 +15,6 @@ const JobsSchema = new mongoose.Schema ({
     workSchedule: {
         type: String,
         enum: ['PART_TIME', 'FULL_TIME'],
-        required: true
     },
     type: {
         type: String,
@@ -31,8 +30,8 @@ const JobsSchema = new mongoose.Schema ({
     education: {
         type: String,
         enum: ['بكالوريوس', 'ثانوية عامة', 'ماجستير', 'دكتوراه'],
-        required: true
       },
+    createdAt: { type: Date, default: Date.now },
     experience: {type: Array },
     skills: {type: Array },
     certificate: {type: Array },

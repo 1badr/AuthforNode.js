@@ -12,13 +12,14 @@ const usersRoutes = require('./routes/Admin/usersRoutes');
 const NotiRoutes = require('./routes/NotiRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const CommunityRoutes = require('./routes/CommunityRoutes');
-const voteRoute = require('./routes/voteRoute');
+const likeRoute = require('./routes/likeRoute');
 const followersRoute = require('./routes/followersRoute');
 const conversationRoute = require("./routes/conversationsRoutes");
 const messageRoute = require("./routes/messagesRoutes");
 const NotificationRealTimeRoute = require("./routes/NotificationRealTimeController");
 const CompanyRoutes = require("./routes/CompanyRoutes");
 const favRoutes = require("./routes/favRoutes");
+const SavesRoute = require("./routes/SavesRoute");
 
 
 
@@ -48,13 +49,15 @@ app.use('/users',usersRoutes);
 app.use('/Noti',NotiRoutes);
 app.use('/search',searchRoutes);
 app.use('/comm',CommunityRoutes);
-app.use('/vote',voteRoute);
+app.use('/like',likeRoute);
 app.use('/follo',followersRoute);
 app.use('/conversation',conversationRoute);
 app.use('/message',messageRoute);
 app.use('/NotificationRealTimeRoute',NotificationRealTimeRoute);
 app.use('/Company',CompanyRoutes);
 app.use('/fav',favRoutes);
+app.use('/save',SavesRoute);
+
 
 
 
@@ -222,8 +225,6 @@ app.get('/read-cookie',(req,res)=>{
    res.json(cookie);
 
 });
-
-
 
 
 app.get('/', function (req, res) {
