@@ -8,6 +8,7 @@ router.post('/postCommu', communityController.postCommu);
 router.post('/postUsers', communityController.postUsers);
 router.get('/searchInCommunity', communityController.searchInCommunity);
 router.delete('/deleteUser/:id', communityController.deleteUser);
+router.delete('/deleteCommu/:id', communityController.deleteCommu);
 
 
 module.exports = router;
