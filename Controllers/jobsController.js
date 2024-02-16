@@ -68,23 +68,30 @@ const getLatestJobs = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(10);
 
-    const jobData = jobs.map((job) => {
       let jobSummary = '';
-      if (job.bio) {
-        jobSummary = job.bio.substring(0, 3); // قص النص ليكون ثلاثة أسطر فقط
+      if (jobs.bio) {
+        jobSummary = jobs.bio.substring(300);
       }
-
-      return {
-        time: job.createdAt,
-        location: job.location,
-        jobTitle: job.name,
-        jobSummary: jobSummary,
-      };
-    });
-
-    res.json({ jobs: jobData });
+    res.json({ jobs });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+
+const getJobById = async (req, res) => {
+  const JobId = req.params.id;
+
+  try {
+    const job = await Jobs.findOne({ _id: JobId });
+
+    if (job) {
+      res.json(job);
+    } else {
+      res.status(404).json({ error: 'Category not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch category' });
   }
 };
 
@@ -95,6 +102,7 @@ module.exports = {
     allJobs,
     updateJob,
     getAllRequestsJobs,
-    getLatestJobs
+    getLatestJobs,
+    getJobById
 }
 

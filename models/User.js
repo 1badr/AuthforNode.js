@@ -31,10 +31,6 @@ const userSchema = new mongoose.Schema ({
     type : {
         type: String,
     },
-    location : {
-        type : String,
-        minLength: [1, 'mini is 20'],
-    },
     image : {
         type : String,
     },
@@ -45,9 +41,13 @@ const userSchema = new mongoose.Schema ({
     bio : {
         type : String,
     },
+    employeeCount : {
+        type : String,
+    },
     CreateAt : {
          type: Date, default: Date.now 
         },
+    CVs : { type: String },
     posts: [{type: mongoose.Types.ObjectId, ref: "Posts", required: true}],
     comment: [{type: mongoose.Types.ObjectId, ref: "Comments", required: true}],
     followers: [{type: String, ref: "Followers", required: true}],

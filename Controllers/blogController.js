@@ -41,8 +41,8 @@ const postblog = async (req, res) => {
 
   const getArticlesByCommunity = async function (req, res) {
     try {
-      const communityId = req.params.id; // استلام معرّف الهوية (ID) للمجتمع من طلب العميل
-      const userType = req.query.userType; // استلام نوع المستخدم (User أو Company) من طلب العميل
+      const communityId = req.params.id; 
+      const userType = req.query.userType; 
   
       let articles;
       if (userType === 'User') {
@@ -50,7 +50,7 @@ const postblog = async (req, res) => {
       } else if (userType === 'Company') {
         articles = await Blogs.find({ community: communityId, userType: 'Company' });
       } else {
-        return res.status(400).json({ error: 'نوع المستخدم غير صالح' });
+        return res.status(400).json({ error: 'Not Valid' });
       }
   
       res.json(articles);
@@ -62,11 +62,11 @@ const postblog = async (req, res) => {
 
   const getArticleById = async function (req, res) {
     try {
-      const articleId = req.params.id; // استلام معرّف الهوية (ID) من طلب العميل
+      const articleId = req.params.id; 
       const article = await Blog.findById(articleId);
       
       if (!article) {
-        return res.status(404).json({ error: 'المقال غير موجود' });
+        return res.status(404).json({ error: 'Not Found' });
       }
   
       res.json(article);
@@ -85,7 +85,7 @@ const postblog = async (req, res) => {
         const blogs = user.blog;
         res.status(200).json(blogs);
       } else {
-        res.status(404).json({ error: 'المستخدم غير موجود' });
+        res.status(404).json({ error: 'Not Found' });
       }
     } catch (error) {
       res.status(500).json({ error: error.message });

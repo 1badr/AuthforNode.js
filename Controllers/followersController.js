@@ -1,66 +1,102 @@
-const Company = require('../models/Company');
 const User = require('../models/User');
-const Followers = require('../models/Followers');
-// UserController.js
+const Followers = require('../models/Followers'); // استبدل 'path/to/FollowersModel' بالمسار الصحيح لنموذج جدول "المتابعون"
 
 const followUser = async (req, res) => {
   try {
-    const otherUserId = req.body.otherUser;
-    const currentUser = req.body.userId;
+    const userId = req.body.userId; // اليوزر الأول
+    const targetUserId = req.body.targetUserId; // اليوزر الثاني
 
-    // Find the current user
-    const user = await User.findById(currentUser);
+    // Find the user
+    const user = await User.findById(userId);
 
-    // Find the other user
-    const otherUser = await Company.findById(otherUserId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
-    // Check if the current user is already following the other user
-    const isFollowing = user.followers.includes(otherUserId);
+    // Find the target user
+    const targetUser = await User.findById(targetUserId);
+
+    if (!targetUser) {
+      return res.status(404).json({ error: "Target user not found" });
+    }
+
+    const isFollowing = user.following && user.following.includes(targetUserId);
 
     if (isFollowing) {
-      // If already following, remove the follower
-      const followerIndex = user.followers.indexOf(otherUserId);
-      const followingIndex = otherUser.followers.indexOf(currentUser);
+      const followIndex = user.following.indexOf(targetUserId);
+      user.following.splice(followIndex, 1);
 
-      user.followers.splice(followerIndex, 1);
-      otherUser.followers.splice(followingIndex, 1);
+      await user.save();
 
-      await Promise.all([user.save(), otherUser.save()]);
-
-      // Remove the entry from Followers collection
-      await Followers.findOneAndDelete({
-        IDUser: otherUserId,
-        IDFollower: currentUser
-      });
-
-      res.json({ message: "Unfollowed user" });
+      res.json({ message: 'Unfollowed' });
     } else {
-      // If not following, add the follower
-      user.followers.push(otherUserId);
-      otherUser.followers.push(currentUser);
+      user.followers.push(targetUserId);
 
-      await Promise.all([user.save(), otherUser.save()]);
+      await user.save();
 
-      // Create a new entry in the Followers collection
-      const newFollower = new Followers({
-        IDUser: otherUserId,
-        IDFollower: currentUser
+      const followersEntry = new Followers({
+        IDUser: targetUserId,
+        IDFollower: userId
       });
-      await newFollower.save();
 
-      res.json({ message: "Followed user" });
+      await followersEntry.save();
+
+      res.json({ message: 'Followed' });
     }
   } catch (error) {
-    res.json(error);
+    res.status(500).json({ error: error.message });
   }
-}
+};
+
+
+
+
+const unFollowUser = async (req, res) => {
+  try {
+    const userId = req.body.userId; // اليوزر الأول
+    const targetUserId = req.body.targetUserId; // اليوزر الثاني
+
+    // Find the user
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Find the target user
+    const targetUser = await User.findById(targetUserId);
+
+    if (!targetUser) {
+      return res.status(404).json({ error: "Target user not found" });
+    }
+
+    // Check if the user is already following the target user
+    const isFollowing = user.following && user.following.includes(targetUserId);
+
+    if (isFollowing) {
+      // If already following, remove the follow
+      const followIndex = user.following.indexOf(targetUserId);
+      user.following.splice(followIndex, 1);
+
+      await user.save();
+
+      res.json({ message: 'Unfollowed' });
+    } else {
+      res.json({ message: "User is not following the target user" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 
 
 const getUserFollowers = async (req, res) => {
   const userId = req.params.id;
   
   try {
-  const user = await User.findById(userId).populate('blog');
+  const user = await User.findById(userId).populate('followers');
   if (user) {
   const blogs = user.followers;
   res.status(200).json(blogs);
@@ -72,8 +108,11 @@ const getUserFollowers = async (req, res) => {
   }
   };
 
+
+
 module.exports =
 {
   followUser,
+  unFollowUser,
   getUserFollowers
 }
