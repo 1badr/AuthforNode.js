@@ -20,6 +20,7 @@ const NotificationRealTimeRoute = require("./routes/NotificationRealTimeControll
 const CompanyRoutes = require("./routes/CompanyRoutes");
 const favRoutes = require("./routes/favRoutes");
 const SavesRoute = require("./routes/SavesRoute");
+const quizRoute = require("./routes/quizRoute");
 
 
 
@@ -57,6 +58,7 @@ app.use('/NotificationRealTimeRoute',NotificationRealTimeRoute);
 app.use('/Company',CompanyRoutes);
 app.use('/fav',favRoutes);
 app.use('/save',SavesRoute);
+app.use('/quiz',quizRoute);
 
 
 
