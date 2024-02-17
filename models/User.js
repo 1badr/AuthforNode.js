@@ -47,7 +47,10 @@ const userSchema = new mongoose.Schema ({
     CreateAt : {
          type: Date, default: Date.now 
         },
-    CVs : { type: String },
+        CV: {
+            type: String,
+            ref: 'CV'
+          },
     posts: [{type: mongoose.Types.ObjectId, ref: "Posts", required: true}],
     comment: [{type: mongoose.Types.ObjectId, ref: "Comments", required: true}],
     followers: [{type: String, ref: "Followers", required: true}],

@@ -1,6 +1,16 @@
 var express = require('express');
 const app = express();
 app.use(express.json());
+const passport = require('passport')
+const passportSetup = require('./config/passport-setup')
+const cookieSession = require('cookie-session')
+const Keys = require('./config/Keys')
+const router = express.Router();
+
+
+app.use(passport.initialize());
+
+
 
 const authRoutes = require ('./routes/authRoutes');
 const CategoreyRoutes = require('./routes/categoreyRoutes');
@@ -69,6 +79,17 @@ app.use(cors({
 }));
 
 
+///========================================================
+//auth google provider
+app.get('/google', passport.authenticate('google', {
+  scope: ['profile']
+}));
+
+// callback
+app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => {
+  res.json();
+});
+//=========================================================
 // Define API routes
 app.get("/api", (req, res) => {
   res.send("API is running");
@@ -149,16 +170,13 @@ const getNotification = (notificationId) => {
 };
 
 io.on("connection", (socket) => {
-  // عند الاتصال
   console.log("تم اتصال مستخدم.");
 
-  // استقبال إشعار جديد
   socket.on("addNotification", (notificationId) => {
     addNotification(notificationId, socket.id);
     io.emit("getNotifications", notifications);
   });
 
-  // إرسال واستقبال الإشعارات
   socket.on("sendNotification", ({ userId, companyId, text }) => {
     const notification = getNotification(receiverId);
     io.to(notification.socketId).emit("receiveNotification", {
@@ -167,7 +185,6 @@ io.on("connection", (socket) => {
     });
   });
 
-  // عند الانفصال
   socket.on("disconnect", () => {
     console.log("تم انفصال مستخدم!");
     removeNotification(socket.id);
@@ -211,6 +228,11 @@ app.get('/mail', async (req, res) => {
     console.error(error);
     res.status(500).send('Error sending email');
   }
+});
+
+
+app.get('/set-cookie',(req,res)=>{
+  req.logOut()
 });
 
 

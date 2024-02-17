@@ -31,9 +31,9 @@ const deleteCV = async (req,res) => {
 
 const allCvs = async (req,res) => {
   try {
-  usersCount =await CV.count()
-  users = await User.find()
-  return res.status(200).json({users,usersCount});
+  CVCount =await CV.count()
+  CVs = await CV.find()
+  return res.status(200).json({CVCount,CVs});
 }
 catch (e){
   console.log(e.message)
@@ -49,8 +49,8 @@ const getUserCvs = async (req, res) => {
   try {
     const user = await User.findById(userId).populate('CV');
     if (user) {
-      const blogs = user.CVs;
-      res.status(200).json(blogs);
+      const cvs = user.CV;
+      res.status(200).json({cvs});
     } else {
       res.status(404).json({ error: 'المستخدم غير موجود' });
     }
@@ -60,27 +60,40 @@ const getUserCvs = async (req, res) => {
 };
 
 
-
 const getCVById = async (req, res) => {
-  const categoryId = req.params.id;
-
   try {
-    const category = await CV.findOne({ _id: categoryId });
+    const cvId = req.params.id;
+    const cv = await CV.findOne({ _id: cvId });
 
-    if (category) {
-      res.json(category);
-    } else {
-      res.status(404).json({ error: 'Category not found' });
+    if (!cv) {
+      return res.status(404).json({ error: 'السيرة الذاتية غير موجودة' });
     }
+
+    res.json(cv);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch category' });
+    res.status(500).json({ error: error.message });
   }
+};
+
+
+const ubdateCV = (req, res) => {
+  const id = req.params.id ;
+  const blogs = new CV(req.body);
+  Blog.findByIdAndUpdate(id)
+  blogs.save()
+  .then(result => {
+    res.json();
+  })
+  .catch(err => {
+    console.log(err);
+  })
 };
 
 module.exports = {
     postCV,
     deleteCV,
     allCvs,
+    ubdateCV,
     getUserCvs,
     getCVById,
 }
