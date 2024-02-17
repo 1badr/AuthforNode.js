@@ -58,8 +58,22 @@ const getUserLikes = async (req, res) => {
 };
 
 
+const getBlogLikes = async (req, res) => {
+  const blogId = req.params.id;
+
+  try {
+    const likes = await Like.find({ blog: blogId }).populate('likerName', 'name');
+
+    res.status(200).json(likes);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
 
 module.exports = {
   likePost,
   getUserLikes,
+  getBlogLikes,
 };

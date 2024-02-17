@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.post('/likePost', likeController.likePost);
 router.get('/getUserLikes/:id', likeController.getUserLikes);
+router.get('/getBlogLikes/:id', likeController.getBlogLikes);
 
 
 

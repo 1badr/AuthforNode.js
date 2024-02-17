@@ -26,12 +26,14 @@ const deleteJobs = (req,res) => {
 };
 
 const allJobs = async (req, res) => {
-   (await Jobs.find()).reverse
-   .then(result => res.json(result))
-   .catch(error => {
-  res.status(412).json({msg: error.message});
-  });
-}
+   try {
+    const jobs = await Jobs.find();
+    const reversedJobs = Jobs.reverse();
+    res.json(reversedJobs);
+   } catch (error) {
+    res.status(412).json({error})
+   }
+};
 
 
 const getAllRequestsJobs = async (req, res) => {
