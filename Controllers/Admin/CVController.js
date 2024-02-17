@@ -76,11 +76,24 @@ const getCVById = async (req, res) => {
 };
 
 
+const ubdateCV = (req, res) => {
+  const id = req.params.id ;
+  const blogs = new CV(req.body);
+  Blog.findByIdAndUpdate(id)
+  blogs.save()
+  .then(result => {
+    res.json();
+  })
+  .catch(err => {
+    console.log(err);
+  })
+};
 
 module.exports = {
     postCV,
     deleteCV,
     allCvs,
+    ubdateCV,
     getUserCvs,
     getCVById,
 }
