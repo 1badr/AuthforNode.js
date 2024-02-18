@@ -14,11 +14,12 @@ const CVSchema = new mongoose.Schema ({
     email : {
         type : String,
     },
-    languages: [{type: Array }],
-    education: [{type: Array }],
-    experience: [{type: Array}],
-    skills: [{type: Array }],
-    certificate: [{type: Array }],
+    languages: {type: Array },
+    education: {type: Array },
+    experience: {type: Array},
+    skills: {type: Array },
+    certificate: {type: Array },
+    userID: {type: String , ref:'User'}
 });
 
 
