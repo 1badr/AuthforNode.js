@@ -19,6 +19,7 @@ const CVSchema = new mongoose.Schema ({
     experience: {type: Array},
     skills: {type: Array },
     certificate: {type: Array },
+    userID: {type: String , ref:'User'}
 });
 
 
