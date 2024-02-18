@@ -45,9 +45,25 @@ const deleteuser = async (req,res) => {
 };
 
 
+const updateUser = (req, res) => {
+  const id = req.params.id;
+  const cvData = req.body;
+
+  User.findByIdAndUpdate(id, cvData)
+    .then(() => {
+      res.json({ success: true });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: 'erorr' });
+    });
+};
+
+
 module.exports = {
     AllUsers,
     deleteuser,
     getuser,
+    updateUser,
 }
 

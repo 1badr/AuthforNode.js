@@ -42,15 +42,13 @@ catch (e){
 
 
 
-
 const getUserCvs = async (req, res) => {
   const userId = req.params.id;
 
   try {
-    const user = await User.findById(userId).populate('CV');
-    if (user) {
-      const cvs = user.CV;
-      res.status(200).json({cvs});
+    const userCVs = await CV.find({ userID: userId });
+    if (userCVs) {
+      res.status(200).json({ cvs: userCVs });
     } else {
       res.status(404).json({ error: 'المستخدم غير موجود' });
     }

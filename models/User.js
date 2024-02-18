@@ -47,14 +47,16 @@ const userSchema = new mongoose.Schema ({
     CreateAt : {
          type: Date, default: Date.now 
         },
-        CV: {
-            type: String,
-            ref: 'CV'
-          },
-    posts: [{type: mongoose.Types.ObjectId, ref: "Posts", required: true}],
-    comment: [{type: mongoose.Types.ObjectId, ref: "Comments", required: true}],
-    followers: [{type: String, ref: "Followers", required: true}],
-    blog: [{type: String, ref: "Blogs", required: true}],
+    CV: 
+        {
+        type: mongoose.Types.ObjectId,
+        ref: 'CV',
+        },
+          
+    posts: {type: mongoose.Types.ObjectId, ref: "Posts"},
+    comment: {type: mongoose.Types.ObjectId, ref: "Comments"},
+    followers: {type: String, ref: "Followers"},
+    blog: {type: String, ref: "Blogs"},
 
 
 })
