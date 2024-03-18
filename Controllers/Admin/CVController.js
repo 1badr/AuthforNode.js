@@ -67,7 +67,7 @@ const getCVById = async (req, res) => {
       return res.status(404).json({ error: 'السيرة الذاتية غير موجودة' });
     }
 
-    res.json(cv);
+    res.json({cv});
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -87,6 +87,23 @@ const updateCV = (req, res) => {
     });
 };
 
+
+
+const getCVUserById = async (req, res) => {
+  try {
+    const cvId = req.params.id;
+    const cv = await User.findOne({ _id: cvId });
+
+    if (!cv) {
+      return res.status(404).json({ error: 'السيرة الذاتية غير موجودة' });
+    }
+
+    res.json(cv);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
     postCV,
     deleteCV,
@@ -94,5 +111,6 @@ module.exports = {
     updateCV,
     getUserCvs,
     getCVById,
+    getCVUserById
 }
 

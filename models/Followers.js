@@ -1,8 +1,4 @@
 const mongoose = require ('mongoose');
-const { v4: uuidv4 } = require('uuid');
-
-const uuid = uuidv4();
-
 
 const FollowersSchema = new mongoose.Schema ({
     IDUser: [{ 

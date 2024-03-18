@@ -8,6 +8,7 @@ router.get('/allCvs', CVController.allCvs);
 router.get('/getCVById/:id', CVController.getCVById);
 router.get('/getUserCvs/:id', CVController.getUserCvs);
 router.put('/ubdateCV/:id', CVController.updateCV);
+router.get('/getCVUserById/:id', CVController.getCVUserById);
 
 module.exports = router;
 
