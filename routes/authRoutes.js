@@ -9,5 +9,6 @@ router.get('/login', authController.login_get)
 router.post('/login', authController.login_post);
 router.get('/logout', authController.logout_get);
 router.get('/image/:id', authController.getUserImageById);
+router.post('/add_Employee', authController.postEmployee);
 
 module.exports = router

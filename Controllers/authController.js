@@ -6,31 +6,35 @@ const jwt =require('jsonwebtoken');
 
 
 const handleErrors = (err) => {
-    console.log(err.message, err.code);
-    let errors = { email: '', password: '' , name: ''};
-  
-    if (err.code === 'incorrect email') {
-      errors.email = 'This email is not registered';
+  console.log(err.message, err.code);
+  let errors = { email: '', password: '', name: '' };
+
+  if (err.code === 'incorrect email') {
+    errors.email = 'This email is not registered';
+  }
+
+  if (err.code === 'incorrect password') {
+    errors.password = 'This password is incorrect';
+  }
+
+  if (err.code === 11000) {
+    errors.email = 'This email is already in use';
+    return errors;
+  }
+
+  if (err.message.includes('user validation failed')) {
+    if (err.errors) {
+      Object.values(err.errors).forEach(({ properties }) => {
+        errors[properties.path] = properties.message;
+      });
     }
-  
-    if (err.code === 'incorrect password') {
-      errors.email = 'This password is incorrect';
-    }
-  
-    if (err.code === 11000) {
-      errors.email = 'This email is already in use';
-      return errors;
-    }
-  
-    if (err.message.includes('user validation failed')) {
-      if (err.errors) {
-        Object.values(err.errors).forEach(({ properties }) => {
-          errors[properties.path] = properties.message;
-        });
-      }
-      return errors;
-    }
-  };
+    return errors;
+  }
+
+  return errors; // إضافة هذا السطر لإرجاع الأخطاء الافتراضية
+};
+
+
 const maxAge = 3*24*60*60 // in secondes , cookie in millie seconds
 const createToken =(id) =>{
     return jwt.sign({id},'badrIsLegend',{
@@ -64,7 +68,7 @@ module.exports.signup_post = async (req,res) => {
 
 
 module.exports.signupCompany = async (req,res) => {
-  const { email , password , name,categorey,image,location,phone,createAt,employeeCount} = req.body;
+  const { email , password , name,categorey,image,location,createAt,employeeCount} = req.body;
   
   try {
       let user = await User.create({  email , password , name,categorey,image,location,phone,createAt,employeeCount});
@@ -139,3 +143,17 @@ module.exports.getUserNameById = async function (req, res) {
   }
 };
 
+
+
+module.exports.postEmployee = async (req,res) => {
+  const { email , password , name , address , bio ,location , image ,categorey} = req.body;
+  
+  try {
+      let Employee = await User.create({ email , password , name , address , bio ,location , image ,categorey});
+      res.status(201).json({Employee:Employee._id});
+  }
+  catch (err){
+      res.status(400).json(err)
+
+  }
+}

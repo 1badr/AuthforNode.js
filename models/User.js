@@ -4,12 +4,9 @@ const bcrypt = require ('bcrypt');
 const { isInteger } = require('lodash');
 const { v4: uuidv4 } = require('uuid');
 
-const uuid = uuidv4();
 
 const userSchema = new mongoose.Schema ({
-    _id: {
-        type: String, default: uuidv4 
-       },
+    
     email : {
         type : String,
         required : [true,'email is required'],
@@ -32,8 +29,14 @@ const userSchema = new mongoose.Schema ({
         type: String,
     },
     image : {
-        type : String,
+        type : File,
     },
+    location: {
+        type: String,
+      },
+    categorey: {
+        type: String,
+      },
     gender: {
         type: String,
         enum: ['male', 'female'],
@@ -49,12 +52,11 @@ const userSchema = new mongoose.Schema ({
         },
     CV: 
         {
-        type: mongoose.Types.ObjectId,
+        type: String,
         ref: 'CV',
         },
           
-    posts: {type: mongoose.Types.ObjectId, ref: "Posts"},
-    comment: {type: mongoose.Types.ObjectId, ref: "Comments"},
+    comment: {type: String, ref: "Comments"},
     followers: {type: String, ref: "Followers"},
     blog: {type: String, ref: "Blogs"},
 

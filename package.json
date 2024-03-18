@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "compute-cosine-similarity": "^1.1.0",
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
@@ -10,6 +11,7 @@
     "faker": "^6.6.6",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
+    "mathjs": "^12.4.1",
     "mongoose": "^7.5.0",
     "mongose": "^0.0.2-security",
     "nodemailer": "^6.9.7",
