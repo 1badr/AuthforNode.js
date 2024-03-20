@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema ({
         type: String,
     },
     image : {
-        type : File,
+        type : String, //التغيير الاخير  
     },
     location: {
         type: String,
