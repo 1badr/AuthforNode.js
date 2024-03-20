@@ -74,6 +74,25 @@ const getCVById = async (req, res) => {
   }
 };
 
+
+
+const getCVByIdd = async (req, res) => {
+  try {
+    const cvId = req.params.id;
+    const cv = await CV.findOne({ _id: cvId });
+
+    if (!cv) {
+      return res.status(404).json({ error: 'السيرة الذاتية غير موجودة' });
+    }
+
+    res.json({cv});
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
 const updateCV = (req, res) => {
   const id = req.params.id;
   const cvData = req.body;
