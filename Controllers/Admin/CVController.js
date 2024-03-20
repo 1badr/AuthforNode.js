@@ -56,12 +56,12 @@ const getUserCvs = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
+////
 
 const getCVById = async (req, res) => {
   try {
     const cvId = req.params.id;
-    const cv = await CV.findOne({ _id: cvId });
+    const cv = await CV.findOne({ userID: cvId });
 
     if (!cv) {
       return res.status(404).json({ error: 'السيرة الذاتية غير موجودة' });
