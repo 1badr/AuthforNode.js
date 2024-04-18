@@ -27,6 +27,8 @@ const userSchema = new mongoose.Schema ({
     },
     type : {
         type: String,
+        enum: ['admin', 'user','employee','company'],
+
     },
     image : {
         type : String, // الاخير  
@@ -50,7 +52,10 @@ const userSchema = new mongoose.Schema ({
     },
     CreateAt : {
          type: Date, default: Date.now 
-        },
+    },
+    companyCreateAt : {
+            type: String,
+    },
     CV: 
         {
         type: String,
