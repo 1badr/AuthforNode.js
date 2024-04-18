@@ -31,6 +31,7 @@ const CompanyRoutes = require("./routes/CompanyRoutes");
 const favRoutes = require("./routes/favRoutes");
 const SavesRoute = require("./routes/SavesRoute");
 const quizRoute = require("./routes/quizRoute");
+const dashpoardRoutes = require("./routes/Admin/dashpoardRoutes");
 
 
 
@@ -41,7 +42,12 @@ app.use(cookiePareser());
 const nodemailer = require("nodemailer");
 const cors = require('cors');
 
-
+const corsOptions ={
+    origin:'http://localhost:3000', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
 
 
 mongoose.connect("mongodb://localhost:27017/levelfive", {
@@ -70,6 +76,7 @@ app.use('/Company',CompanyRoutes);
 app.use('/fav',favRoutes);
 app.use('/save',SavesRoute);
 app.use('/quiz',quizRoute);
+app.use('/dashpoard',dashpoardRoutes);
 
 
 
@@ -80,6 +87,7 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
 
 
 
