@@ -50,7 +50,9 @@ module.exports.login_get = (req,res) => {
 }
 
 module.exports.signup_post = async (req,res) => {
-    const { email , password , name,
+    const { email ,
+      password ,
+      name,
       type,
       image,
       location,
@@ -59,6 +61,10 @@ module.exports.signup_post = async (req,res) => {
       bio,
       employeeCount,
       companyCreateAt,
+      CV,
+      comment,
+      followers,
+      blog,
     } = req.body;
     
     try {
@@ -92,10 +98,10 @@ module.exports.signup_post = async (req,res) => {
 
 
 module.exports.signupCompany = async (req,res) => {
-  const { email , password , name,categorey,image,location,createAt,employeeCount} = req.body;
+  const { email , password , name,type,categorey,bio,image,location,phone,createAt,employeeCount} = req.body;
   
   try {
-      let user = await User.create({  email , password , name,categorey,image,location,phone,createAt,employeeCount});
+      let user = await User.create({  email , password , name,type,categorey,bio,image,location,phone,createAt,employeeCount});
       const token = createToken(user._id);
       res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000});
       res.status(201).json({user:user._id});
