@@ -1,4 +1,5 @@
 const mongoose = require ('mongoose');
+const Categorey = require('./Categorey');
 
 const JobsSchema = new mongoose.Schema ({
     IDUser: {type: String, ref: "User"},
@@ -7,7 +8,12 @@ const JobsSchema = new mongoose.Schema ({
     },
     location : {
         type : String,
-        minLength: [20, 'mini is 20'],
+    },
+    
+    Categorey : {
+        type : String,
+        enum: ['Program', 'Desgin', 'Medical' , 'Mangment']   
+
     },
     bio : {
         type : String,
@@ -19,7 +25,6 @@ const JobsSchema = new mongoose.Schema ({
     type: {
         type: String,
         enum: ['Remote', 'immanence'],
-        required: true
     },
     salary : {
         type : String,

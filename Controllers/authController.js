@@ -49,8 +49,27 @@ module.exports.login_get = (req,res) => {
     res.render('login');
 }
 
-module.exports.signup_post = async (req,res) => {
-    const { email , password , name,
+
+module.exports.signup_post = async (req, res) => {
+  const {
+    email,
+    password,
+    name,
+    type,
+    image,
+    location,
+    categorey,
+    gender,
+    bio,
+    employeeCount,
+    companyCreateAt,
+  } = req.body;
+
+  try {
+    let user = await User.create({
+      email,
+      password,
+      name,
       type,
       image,
       location,
@@ -59,35 +78,19 @@ module.exports.signup_post = async (req,res) => {
       bio,
       employeeCount,
       companyCreateAt,
-    } = req.body;
-    
-    try {
-        let user = await User.create({
-        email ,
-        password 
-        ,name,type,
-        image,
-        location,
-        categorey,
-        gender,
-        bio,
-        employeeCount,
-        companyCreateAt,
-        CV,
-        comment,
-        followers,
-        blog,
-      });
-        const token = createToken(user._id);
-        res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000});
-        res.status(201).json({user:user._id,user:user.type});
-    }
-    catch (err){
-        let error = handleErrors(err)
-        res.status(400).json({error})
+    });
 
-    }
-}
+    const token = createToken(user._id);
+    const userType = user.type;
+    const userId = user._id;
+
+    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+    res.status(200).json({ type: userType, id: userId });
+    } catch (err) {
+    let error = handleErrors(err);
+    res.status(400).json({ error });
+  }
+};
 
 
 
@@ -97,10 +100,11 @@ module.exports.signupCompany = async (req,res) => {
   try {
       let user = await User.create({  email , password , name,categorey,image,location,phone,createAt,employeeCount});
       const token = createToken(user._id);
+      const userType = user.type;
+      const userId = user._id;
       res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000});
-      res.status(201).json({user:user._id});
-  }
-  catch (err){
+      res.status(200).json({ type: userType, id: userId });
+      } catch (err){
       let error = handleErrors(err)
       res.status(400).json({error})
 
