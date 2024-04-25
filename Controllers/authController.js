@@ -95,7 +95,7 @@ module.exports.signup_post = async (req, res) => {
 
 
 module.exports.signupCompany = async (req,res) => {
-  const { email , password , name,categorey,image,location,createAt,employeeCount} = req.body;
+  const { email , password , name,categorey,image,location,createAt,phone,employeeCount} = req.body;
   
   try {
       let user = await User.create({  email , password , name,categorey,image,location,phone,createAt,employeeCount});
