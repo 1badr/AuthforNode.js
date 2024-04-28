@@ -40,8 +40,8 @@ const deleteNoti = (req,res) => {
 
   const AllNoti = async (req,res) => {
     try {
-    users = await Noti.find()
-    return res.status(200).json({users});
+    noti = await Noti.find()
+    return res.status(200).json({noti});
   }
   catch (e){
     console.log(e.message)
