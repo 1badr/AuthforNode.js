@@ -49,26 +49,6 @@ module.exports.login_get = (req,res) => {
     res.render('login');
 }
 
-
-module.exports.signup_post = async (req, res) => {
-  const {
-    email,
-    password,
-    name,
-    type,
-    image,
-    location,
-    categorey,
-    gender,
-    bio,
-    employeeCount,
-    companyCreateAt,
-  } = req.body;
-
-  try {
-    let user = await User.create({
-      email,
-      password,
       name,
       type,
       image,
@@ -77,9 +57,7 @@ module.exports.signup_post = async (req, res) => {
       gender,
       bio,
       employeeCount,
-      companyCreateAt,
-    });
-
+ 
     const token = createToken(user._id);
     const userType = user.type;
     const userId = user._id;
@@ -95,10 +73,10 @@ module.exports.signup_post = async (req, res) => {
 
 
 module.exports.signupCompany = async (req,res) => {
-  const { email , password , name,categorey,image,location,createAt,phone,employeeCount} = req.body;
+
   
   try {
-      let user = await User.create({  email , password , name,categorey,image,location,phone,createAt,employeeCount});
+      let user = await User.create({  email , password , name,type,categorey,bio,image,location,phone,createAt,employeeCount});
       const token = createToken(user._id);
       const userType = user.type;
       const userId = user._id;

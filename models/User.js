@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema ({
     type : {
         type: String,
         enum: ['admin', 'user','employee','company'],
+        require : [true,'type is required'],
 
     },
     image : {
