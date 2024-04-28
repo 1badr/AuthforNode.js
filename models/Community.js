@@ -9,13 +9,15 @@ const CommunitySchema = new mongoose.Schema ({
     },
     Categorey : {
         type : String,
+        enum: ['Program', 'Desgin', 'Medical' , 'Mangment']   
+
     },
-    members: [{type: mongoose.Types.ObjectId, ref: "User", ref: "Company", required: true}],
+    members: [{type: String, ref: "User"}],
     create_at: {
         type :  { type: Date, default: Date.now },
     },
-    admin: [{type: mongoose.Types.ObjectId, ref: "User", required: true}],
-    IDMessages: [{type: mongoose.Types.ObjectId, ref: "Messages", required: true}]
+    admin: [{type: String, ref: "User"}],
+    IDMessages: [{type: String, ref: "Messages"}]
 
 
 });

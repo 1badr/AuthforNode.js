@@ -7,7 +7,6 @@ const JobsSchema = new mongoose.Schema ({
     },
     location : {
         type : String,
-        minLength: [20, 'mini is 20'],
     },
     bio : {
         type : String,

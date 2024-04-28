@@ -1,14 +1,13 @@
 const Community = require ('../models/Community');
 const User = require ('../models/User');
 
-
 const postCommu = async (req, res) => {
-    const commu = new Community(req.body);
-    CVs.save()
-      .then((result) => {
-        res.status(201).json({ commu: commu._id });
-      });
-  };
+  const comm = new Community(req.body);
+  comm.save()
+    .then((result) => {
+      res.status(201).json({ comm: comm._id });
+    });
+};
 
     const postUsers = async (req, res) => {
         const user = new User(req.body);

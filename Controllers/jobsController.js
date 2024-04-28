@@ -16,7 +16,7 @@ const postJobs = async (req, res) => {
 const deleteJobs = (req,res) => {
   const id = req.params.id ;
 
-  job.findByIdAndDelete(id)
+  Jobs.findByIdAndDelete(id)
   .then(result => {
     res.status(201).json();
   })
@@ -28,7 +28,7 @@ const deleteJobs = (req,res) => {
 const allJobs = async (req, res) => {
    try {
     const jobs = await Jobs.find();
-    const reversedJobs = Jobs.reverse();
+    const reversedJobs = jobs.reverse();
     res.json(reversedJobs);
    } catch (error) {
     res.status(412).json({error})
@@ -48,20 +48,19 @@ const getAllRequestsJobs = async (req, res) => {
 };
 
 
-const updateJob = async (req, res) => {
-  const jobId = req.params.Id;
-  const updatedJob = req.body;
+const updateJobs = (req, res) => {
+  const id = req.params.id;
+  const cvData = req.body;
 
-  try {
-    const result = await Jobs.findOneAndUpdate({ _id: jobId }, updatedJob, { new: true });
-    res.status(201).json(result);
-  } catch (error) {
-    res.status(412).json({ msg: error.message });
-  }
+  Jobs.findByIdAndUpdate(id, cvData)
+    .then(() => {
+      res.json({ success: true });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: 'erorr' });
+    });
 };
-
-
-
 
 
 const getLatestJobs = async (req, res) => {
@@ -102,7 +101,7 @@ module.exports = {
     deleteJobs,
     postJobs,
     allJobs,
-    updateJob,
+    updateJobs,
     getAllRequestsJobs,
     getLatestJobs,
     getJobById
