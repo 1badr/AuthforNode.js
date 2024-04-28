@@ -40,12 +40,13 @@ const getAllRequestsJobs = async (req, res) => {
   const jobId = req.params.id;
 
   try {
-    const requests = await Requests.find({ userId })
+    const requests = await Jobs.find({ IDUser:jobId })
     res.status(200).json(requests);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 
 const updateJob = async (req, res) => {
