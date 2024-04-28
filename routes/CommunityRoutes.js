@@ -3,12 +3,12 @@ const communityController = require('../Controllers/communityController');
 const router = express.Router();
 
 router.get('/AllCommu', communityController.AllCommu);
-router.get('/AllUsers', communityController.AllUsers);// لازم اجيب اليوزرز اللي في الكميونيتي
-router.post('/postCommu', communityController.postCommu);
+router.get('/AllUsers', communityController.AllUsers);
+router.post('/postCommu', communityController.postCommu); // تحتاجه 
 router.post('/postUsers', communityController.postUsers);
-router.get('/searchInCommunity', communityController.searchInCommunity); // مايشتغل
+router.get('/searchInCommunity', communityController.searchInCommunity); 
 router.delete('/deleteUser/:id', communityController.deleteUser);
-router.delete('/deleteCommu/:id', communityController.deleteCommu);
+router.delete('/deleteCommu/:id', communityController.deleteCommu); // تحتاجه 
 
 
 module.exports = router;

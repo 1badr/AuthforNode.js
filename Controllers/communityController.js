@@ -31,18 +31,21 @@ const postCommu = async (req, res) => {
       };
       
 
-
-      const deleteCommu = (req, res) => {
+      const deleteCommu = async (req,res) => {
         const id = req.params.id ;
       
         Community.findByIdAndDelete(id)
         .then(result => {
-          res.json();
+          console.log("delete")
+          res.status(200).json();
         })
         .catch(err => {
           console.log(err);
         })
       };
+      
+
+
 
       const deleteUser = (req, res) => {
         const id = req.params.id ;
