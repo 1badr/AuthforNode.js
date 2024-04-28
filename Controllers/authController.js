@@ -31,7 +31,7 @@ const handleErrors = (err) => {
     return errors;
   }
 
-  return errors; // إضافة هذا السطر لإرجاع الأخطاء الافتراضية
+  return errors; 
 };
 
 
