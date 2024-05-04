@@ -9,6 +9,9 @@ router.put('/updateJob/:id', jobsController.updateJobs);
 router.get('/getAllRequestsJobs/:id', jobsController.getAllRequestsJobs);
 router.get('/getLatestJobs', jobsController.getLatestJobs);
 router.get('/getJobById/:id', jobsController.getJobById);
+router.get('/getUserJobs/:id', jobsController.getJobsById);
+router.post('/handleCVRequest', jobsController.handleCVRequest);
+router.get('/getAllTrueRequestsJobs/:id', jobsController.getAllTrueRequestsJobs);
 
 module.exports = router;
 

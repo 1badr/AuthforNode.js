@@ -2,7 +2,8 @@ const { restart } = require('nodemon');
 const Jobs = require ('../models/Jobs');
 const { result } = require('lodash');
 const { async } = require('seed/lib/seed');
-const Requests = require('../models/Requests')
+const Requests = require('../models/Requests');
+const CV = require('../models/CV');
 
 const postJobs = async (req, res) => {
     const job = new Jobs (req.body);
@@ -97,6 +98,72 @@ const getJobById = async (req, res) => {
 };
 
 
+
+
+  const getJobsById = async (req, res) => {
+    const JobId = req.params.id;
+  
+    try {
+      const job = await Jobs.findOne({ IDUser: JobId });
+  
+      if (job) {
+        res.json(job);
+      } else {
+        res.status(404).json({ error: 'Category not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch category' });
+    }
+  };
+
+
+
+  async function handleCVRequest(req, res) {
+    const { userId, jobId } = req.body;
+  
+    try {
+      // التحقق مما إذا كان لدى المستخدم سيرة ذاتية
+      const cv = await CV.findOne({ userID: userId }).exec();
+  
+      if (cv) {
+        // إذا وجدت سيرة ذاتية
+        const request = await Requests.findOneAndUpdate(
+          { userId, jobId },
+          { sentIt: true },
+          { new: true }
+        ).exec();
+  
+        if (request) {
+          return res.status(200).json({ hasCV: true, requestUpdated: true, sentIt: true });
+        } else {
+          return res.status(500).json({ error: 'Failed to update request' });
+        }
+      } else {
+        // إذا لم توجد سيرة ذاتية
+        const request = new Requests({ userId, jobId });
+        await request.save();
+  
+        return res.status(200).json({ hasCV: true, requestSaved: true });
+      }
+    } catch (error) {
+      // إدارة الأخطاء في حالة حدوث خطأ أثناء الاستعلام عن قاعدة البيانات أو حفظ البيانات
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
+
+
+
+  const getAllTrueRequestsJobs = async (req, res) => {
+    const jobId = req.params.id;
+  
+    try {
+      const requests = await Requests.find({ jobId, sentIt: true }).exec();
+      res.status(200).json(requests);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 module.exports = {
     deleteJobs,
     postJobs,
@@ -104,6 +171,9 @@ module.exports = {
     updateJobs,
     getAllRequestsJobs,
     getLatestJobs,
-    getJobById
+    getJobById,
+    getJobsById,
+    getAllTrueRequestsJobs,
+    handleCVRequest
 }
 

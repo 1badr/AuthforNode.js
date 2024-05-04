@@ -13,12 +13,11 @@ const JobsSchema = new mongoose.Schema ({
     },
     workSchedule: {
         type: String,
-        enum: ['PART_TIME', 'FULL_TIME'],
+        enum: ['دوام جزئي', 'دوام كامل'],
     },
     type: {
         type: String,
-        enum: ['Remote', 'immanence'],
-        required: true
+        enum: ['عن بعد', 'حضوري'],
     },
     salary : {
         type : String,

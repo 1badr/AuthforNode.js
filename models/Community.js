@@ -9,7 +9,7 @@ const CommunitySchema = new mongoose.Schema ({
     },
     Categorey : {
         type : String,
-        enum: ['Program', 'Desgin', 'Medical' , 'Mangment']   
+        enum: ['برمجة', 'تصميم', 'طب' , 'ادارة']   
 
     },
     members: [{type: String, ref: "User"}],

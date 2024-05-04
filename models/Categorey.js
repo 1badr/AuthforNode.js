@@ -5,7 +5,7 @@ const CategoreySchema = new mongoose.Schema ({
     
     name : {
         type : String,
-        enum: ['Program', 'Desgin', 'Medical' , 'Mangment']   
+        enum: ['برمجة', 'تصميم', 'طب' , 'ادارة']   
     },
     likes_count: {
          type: Number, default: 0 

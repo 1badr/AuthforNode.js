@@ -1,3 +1,4 @@
+const Jobs = require('../models/Jobs');
 const User = require('../models/User'); // استبدل المسار بالمسار الصحيح لملف النموذج UserModel
 
 const getTopFollowedCompanies = async (req, res) => {
@@ -23,9 +24,31 @@ const getTopFollowedCompanies = async (req, res) => {
 
 
 
+async function getCompanyJobs(req, res) {
+  const companyId = req.params.companyId;
+
+  try {
+    // البحث عن الشركة بناءً على معرّف الشركة
+    const company = await User.findOne({ _id: companyId, type: 'company' })
+      .populate('subscriptions');
+
+    if (!company) {
+      return res.status(404).json({ message: 'Company not found' });
+    }
+
+    // الوظائف المرتبطة بالشركة
+    const companyJobs = company.subscriptions;
+
+    res.status(200).json({ jobs: companyJobs });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 
 
   module.exports = {
     getTopFollowedCompanies,
+    getCompanyJobs
     
 }
