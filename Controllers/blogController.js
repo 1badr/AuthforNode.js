@@ -4,6 +4,7 @@ const User = require ('../models/User');
 const { result } = require('lodash');
 const { async } = require('seed/lib/seed');
 const Blogs = require('../models/Blogs');
+const Community = require('../models/Community');
 
 const deleteblog = (req, res) => {
   const id = req.params.id ;
@@ -25,40 +26,20 @@ const postblog = async (req, res) => {
       });
   };
 
-
   const ubdateblog = (req, res) => {
-    const id = req.params.id ;
-    const blogs = new Blog(req.body);
-    Blog.findByIdAndUpdate(id)
-    blogs.save()
-    .then(result => {
-      res.json();
-    })
-    .catch(err => {
-      console.log(err);
-    })
-  };
-
-  const getArticlesByCommunity = async function (req, res) {
-    try {
-      const communityId = req.params.id; 
-      const userType = req.query.userType; 
+    const id = req.params.id;
+    const updatedBlog = req.body;
   
-      let articles;
-      if (userType === 'User') {
-        articles = await Blogs.find({ community: communityId, userType: 'User' });
-      } else if (userType === 'Company') {
-        articles = await Blogs.find({ community: communityId, userType: 'Company' });
-      } else {
-        return res.status(400).json({ error: 'Not Valid' });
-      }
-  
-      res.json(articles);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+    Blog.findByIdAndUpdate(id, updatedBlog, { new: true })
+      .then(result => {
+        res.json(result);
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({ error: err.message });
+      });
   };
-
+  
 
   const getArticleById = async function (req, res) {
     try {
@@ -80,17 +61,13 @@ const postblog = async (req, res) => {
     const userId = req.params.id;
   
     try {
-      const user = await User.findById(userId).populate('blog');
-      if (user) {
-        const blogs = user.blog;
-        res.status(200).json(blogs);
-      } else {
-        res.status(404).json({ error: 'Not Found' });
-      }
+      const blogs = await Blogs.find({ author: userId });
+      res.status(200).json(blogs);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   };
+  
 
 
 
@@ -112,7 +89,6 @@ module.exports = {
     postblog,
     deleteblog,
     ubdateblog,
-    getArticlesByCommunity,
     getArticleById,
     getUserBlogs,
     getArticlesUserInLimit
