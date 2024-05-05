@@ -14,9 +14,13 @@ const CommunitySchema = new mongoose.Schema ({
     },
     members: [{type: String, ref: "User"}],
     create_at: {
-        type :  { type: Date, default: Date.now },
+        type: Date,
+        default: Date.now
     },
-    admin: [{type: String, ref: "User"}],
+    userType: {
+        type : String,
+        enum: ["User","Company"] 
+    },
     IDMessages: [{type: String, ref: "Messages"}]
 
 
