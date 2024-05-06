@@ -58,17 +58,16 @@ const filterBlogsByUserType = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-
 const searchByLocation = async function (location) {
   try {
-    const users = await User.find({ location: location }); // تمرير الموقع بشكل صحيح إلى دالة find
+    const users = await User.find({
+      location: { $regex: new RegExp(location, 'i') }
+    });
     return users;
   } catch (error) {
-    throw new Error('Failed to search users by location');
+    throw new Error(`Failed to search users by location: ${error.message}`);
   }
 };
-
 
 const searchByGender = async function (gender) {
   try {

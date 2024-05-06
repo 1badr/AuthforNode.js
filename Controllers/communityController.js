@@ -118,6 +118,30 @@ const postCommu = async (req, res) => {
       }
     };
 
+    const getArticlesCompanyByTypeCompany = async (req, res) => {
+      try {
+        const communityId = req.params.communityId; // استرجاع الايدي حق المجتمع من قام بالاستدعاء
+    
+        const articles = await Blogs.find({ type: 'company', communityId });
+        return res.status(200).json({ articles });
+      } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({ message: 'Failed to get articles by type' });
+      }
+    };
+
+    const getArticlesCompanyByTypeUser = async (req, res) => {
+      try {
+        const communityId = req.params.communityId; // استرجاع الايدي حق المجتمع من قام بالاستدعاء
+    
+        const articles = await Blogs.find({ type: 'user', communityId });
+        return res.status(200).json({ articles });
+      } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({ message: 'Failed to get articles by type' });
+      }
+    };
+
 module.exports = {
     postCommu,
     postUsers,
@@ -128,6 +152,8 @@ module.exports = {
     AllCommu,
     getArticlesUserByType,
     getCommuById,
-    getArticlesCompanyByType
+    getArticlesCompanyByType,
+    getArticlesCompanyByTypeCompany,
+    getArticlesCompanyByTypeUser,
 }
 
