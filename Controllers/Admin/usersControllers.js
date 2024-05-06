@@ -28,7 +28,32 @@ const getuser = async (req, res) => {
 };
 
 
+const getAllUsersByType = async (req, res) => {
+  try {
+    const users = await User.find({ userType: 'user' });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
+const getAllEmployeeByType = async (req, res) => {
+  try {
+    const users = await User.find({ userType: 'employee' });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getAllCompanyByType = async (req, res) => {
+  try {
+    const users = await User.find({ type: 'company' });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 
 const deleteuser = async (req,res) => {
@@ -65,5 +90,8 @@ module.exports = {
     deleteuser,
     getuser,
     updateUser,
+    getAllEmployeeByType,
+    getAllCompanyByType,
+    getAllUsersByType
 }
 

@@ -1,3 +1,4 @@
+const { string } = require('mathjs');
 const mongoose = require('mongoose');
 
 const BlogsSchema = new mongoose.Schema({
@@ -6,6 +7,10 @@ const BlogsSchema = new mongoose.Schema({
   },
   body: {
     type: String,
+  },
+  type: {
+    type: String,
+    enum: ['user','company']   
   },
   likes: [
     {

@@ -1,3 +1,4 @@
+const Blogs = require('../models/Blogs');
 const Community = require ('../models/Community');
 const User = require ('../models/User');
 
@@ -81,7 +82,41 @@ const postCommu = async (req, res) => {
       }
     };
 
-  
+    const getCommuById = async (req, res) => {
+      try {
+        const commuId = req.params.id; // استخراج الهوية (ID) من الطلب
+        const commu = await Community.findById(commuId);
+        
+        if (!commu) {
+          return res.status(404).json({ message: 'Community not found' });
+        }
+        
+        return res.status(200).json({ commu });
+      } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({ message: 'Failed to get community' });
+      }
+    };
+
+    const getArticlesUserByType = async (req, res) => {
+      try {
+        const articles = await Blogs.find({ type: 'user' });
+        return res.status(200).json({ articles });
+      } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({ message: 'Failed to get articles by type' });
+      }
+    };
+
+    const getArticlesCompanyByType = async (req, res) => {
+      try {
+        const articles = await Blogs.find({ type: 'company' });
+        return res.status(200).json({ articles });
+      } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({ message: 'Failed to get articles by type' });
+      }
+    };
 
 module.exports = {
     postCommu,
@@ -91,5 +126,8 @@ module.exports = {
     deleteUser,
     AllUsers,
     AllCommu,
+    getArticlesUserByType,
+    getCommuById,
+    getArticlesCompanyByType
 }
 

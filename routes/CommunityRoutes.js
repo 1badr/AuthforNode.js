@@ -9,6 +9,9 @@ router.post('/postUsers', communityController.postUsers);
 router.get('/searchInCommunity', communityController.searchInCommunity); 
 router.delete('/deleteUser/:id', communityController.deleteUser);
 router.delete('/deleteCommu/:id', communityController.deleteCommu); // تحتاجه 
+router.get('/getCommuById/:id', communityController.getCommuById); // تحتاجه 
+router.get('/getArticlesCompanyByType', communityController.getArticlesCompanyByType); // تحتاجه 
+router.get('/getArticlesUserByType', communityController.getArticlesUserByType); // تحتاجه 
 
 
 module.exports = router;

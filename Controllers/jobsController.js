@@ -3,6 +3,7 @@ const Jobs = require ('../models/Jobs');
 const { result } = require('lodash');
 const { async } = require('seed/lib/seed');
 const Requests = require('../models/Requests');
+const User = require('../models/User');
 const CV = require('../models/CV');
 
 const postJobs = async (req, res) => {
@@ -70,16 +71,27 @@ const getLatestJobs = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(10);
 
-      let jobSummary = '';
-      if (jobs.bio) {
-        jobSummary = jobs.bio.substring(300);
+    const jobsWithUserDetails = await Promise.all(jobs.map(async (job) => {
+      const user = await User.findById(job.IDUser);
+      if (user) {
+        const jobWithUserDetails = {
+          ...job._doc,
+          userImage: user.image,
+          companyName: user.name
+        };
+        return jobWithUserDetails;
+      } else {
+        return null;
       }
-    res.json({ jobs });
+    }));
+
+    const filteredJobs = jobsWithUserDetails.filter(job => job !== null);
+
+    res.json({ jobs: filteredJobs });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
 
 const getJobById = async (req, res) => {
   const JobId = req.params.id;
@@ -164,6 +176,40 @@ const getJobById = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
+
+
+  const getAllRequestsJobsInCompany = async (req, res) => {
+    const userId = req.params.id;
+  
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      const jobs = await Jobs.find({ companyId: user.companyId });
+      if (jobs.length === 0) {
+        return res.status(200).json({ message: 'No jobs found for this company' });
+      }
+  
+      const requestsByJob = {};
+  
+      for (const job of jobs) {
+        const requests = await Requests.find({ jobId: job._id });
+        if (requests.length > 0) {
+          requestsByJob[job._id] = {
+            jobDetails: job,
+            requests: requests
+          };
+        }
+      }
+  
+      res.status(200).json(requestsByJob);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
 module.exports = {
     deleteJobs,
     postJobs,
@@ -174,6 +220,7 @@ module.exports = {
     getJobById,
     getJobsById,
     getAllTrueRequestsJobs,
-    handleCVRequest
+    handleCVRequest,
+    getAllRequestsJobsInCompany
 }
 

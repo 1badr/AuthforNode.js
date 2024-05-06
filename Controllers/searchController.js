@@ -47,9 +47,9 @@ const filterBlogsByUserType = async (req, res) => {
     const users = await User.find({ type: 'company' });
 
     const filteredUsers = users.filter((user) => {
-      const userCreatedAt = user.createdAt.getTime();
+      const userCreatedAt = user.CreateAt && user.CreateAt.getTime();
       return (
-        userCreatedAt >= lastMonth.getTime() && userCreatedAt <= today.getTime()
+        userCreatedAt && userCreatedAt >= lastMonth.getTime() && userCreatedAt <= today.getTime()
       );
     });
 
@@ -59,15 +59,15 @@ const filterBlogsByUserType = async (req, res) => {
   }
 };
 
+
 const searchByLocation = async function (location) {
   try {
-    const users = await this.find({ location });
+    const users = await User.find({ location: location }); // تمرير الموقع بشكل صحيح إلى دالة find
     return users;
   } catch (error) {
-    throw Error('Failed to search users by location');
+    throw new Error('Failed to search users by location');
   }
 };
-
 
 
 const searchByGender = async function (gender) {

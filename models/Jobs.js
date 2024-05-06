@@ -8,6 +8,10 @@ const JobsSchema = new mongoose.Schema ({
     location : {
         type : String,
     },
+    image : {
+        type : String,
+        ref:"User"
+    },
     bio : {
         type : String,
     },
