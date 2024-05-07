@@ -1,10 +1,13 @@
 const mongoose = require ('mongoose');
 //badr
 const CommentsSchema = new mongoose.Schema ({
-    commenterName: [{type: String, ref: "User" , required: true}],
+    commenterID: [{type: String, ref: "User" , required: true}],
     body : {
         type : String,
-        require : true,
+    },
+    blogID : {
+        type : String,
+        ref : "Blogs",
     },
     date : {
         date: { type: Date, default: Date.now },

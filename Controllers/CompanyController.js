@@ -29,8 +29,7 @@ async function getCompanyJobs(req, res) {
 
   try {
     // البحث عن الشركة بناءً على معرّف الشركة
-    const company = await User.findOne({ _id: companyId, type: 'company' })
-      .populate('subscriptions');
+    const company = await User.findOne({ _id: companyId, type: 'company' });
 
     if (!company) {
       return res.status(404).json({ message: 'Company not found' });

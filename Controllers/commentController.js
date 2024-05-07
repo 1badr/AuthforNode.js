@@ -30,7 +30,7 @@ const getArticleComments = async (req, res) => {
   const articleId = req.params.id;
 
   try {
-    const comments = await Comment.find({ article: articleId }).populate('commenterName', 'name');
+    const comments = await Comment.find({ blogID: articleId }).populate('commenterID', 'blogID');
 
     res.status(200).json(comments);
   } catch (error) {
