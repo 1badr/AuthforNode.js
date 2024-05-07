@@ -130,15 +130,14 @@ const getJobById = async (req, res) => {
 
 
 
+
   async function handleCVRequest(req, res) {
     const { userId, jobId } = req.body;
   
     try {
-      // التحقق مما إذا كان لدى المستخدم سيرة ذاتية
       const cv = await CV.findOne({ userID: userId }).exec();
   
       if (cv) {
-        // إذا وجدت سيرة ذاتية
         const request = await Requests.findOneAndUpdate(
           { userId, jobId },
           { sentIt: true },
@@ -146,24 +145,51 @@ const getJobById = async (req, res) => {
         ).exec();
   
         if (request) {
-          return res.status(200).json({ hasCV: true, requestUpdated: true, sentIt: true });
+          const job = await Jobs.findById(jobId).exec();
+          const user = await User.findById(userId).exec();
+  
+          const response = {
+            jobs: [
+              {
+                userId: request.userId,
+                jobId: request.jobId,
+                image: user.image,
+                jobName: job.name,
+                userName: user.name
+              }
+            ]
+          };
+  
+          return res.status(200).json(response);
         } else {
           return res.status(500).json({ error: 'Failed to update request' });
         }
       } else {
-        // إذا لم توجد سيرة ذاتية
         const request = new Requests({ userId, jobId });
         await request.save();
   
-        return res.status(200).json({ hasCV: true, requestSaved: true });
+        const job = await Jobs.findById(jobId).exec();
+        const user = await User.findById(userId).exec();
+  
+        const response = {
+          jobs: [
+            {
+              userId: request.userId,
+              jobId: request.jobId,
+              image: user.image,
+              jobName: job.name,
+              userName: user.name
+            }
+          ]
+        };
+  
+        return res.status(200).json(response);
       }
     } catch (error) {
-      // إدارة الأخطاء في حالة حدوث خطأ أثناء الاستعلام عن قاعدة البيانات أو حفظ البيانات
       console.error(error);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
-
 
 
   const getAllTrueRequestsJobs = async (req, res) => {
@@ -171,20 +197,48 @@ const getJobById = async (req, res) => {
   
     try {
       const requests = await Requests.find({ jobId, sentIt: true }).exec();
-      res.status(200).json(requests);
+  
+      const userIds = requests.map(request => request.userId);
+      const users = await User.find({ _id: { $in: userIds } }).exec();
+  
+      const response = {
+        jobs: requests.map(request => {
+          const user = users.find(user => user._id.toString() === request.userId.toString());
+          const job = Jobs.findById(request.jobId).exec();
+  
+          return {
+            userId: request.userId,
+            jobId: request.jobId,
+            image: user.image,
+            jobName: job.name,
+            userName: user.name
+          };
+        })
+      };
+  
+      res.status(200).json(response);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   };
 
 
+  const mongoose = require('mongoose');
+  
   const getAllRequestsJobsInCompany = async (req, res) => {
     const userId = req.params.id;
+  
+    // تحقق من صحة المعرف
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      const error = 'Invalid user ID';
+      return res.status(400).json({ error });
+    }
   
     try {
       const user = await User.findById(userId);
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        const error = 'User not found';
+        return res.status(404).json({ error });
       }
   
       const jobs = await Jobs.find({ companyId: user.companyId });
@@ -196,10 +250,26 @@ const getJobById = async (req, res) => {
   
       for (const job of jobs) {
         const requests = await Requests.find({ jobId: job._id });
+  
         if (requests.length > 0) {
+          const userIds = requests.map(request => request.userId);
+          const users = await User.find({ _id: { $in: userIds } }).exec();
+  
+          const jobRequests = requests.map(request => {
+            const user = users.find(user => user._id.toString() === request.userId.toString());
+  
+            return {
+              userId: request.userId,
+              jobId: request.jobId,
+              image: user.image,
+              jobName: job.name,
+              userName: user.name
+            };
+          });
+  
           requestsByJob[job._id] = {
             jobDetails: job,
-            requests: requests
+            requests: jobRequests
           };
         }
       }
@@ -209,6 +279,8 @@ const getJobById = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
+  
+  
 
 module.exports = {
     deleteJobs,
