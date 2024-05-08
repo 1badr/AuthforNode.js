@@ -1,6 +1,5 @@
 const User = require('../models/User');
 const Followers = require('../models/Followers'); // استبدل 'path/to/FollowersModel' بالمسار الصحيح لنموذج جدول "المتابعون"
-
 const followUser = async (req, res) => {
   try {
     const userId = req.body.userId; // اليوزر الأول
@@ -30,7 +29,9 @@ const followUser = async (req, res) => {
 
       res.json({ message: 'Unfollowed' });
     } else {
-      user.followers.push(targetUserId);
+      // Make sure the 'following' property is defined and initialized as an empty array
+      user.following = user.following || [];
+      user.following.push(targetUserId);
 
       await user.save();
 
@@ -96,9 +97,9 @@ const getUserFollowers = async (req, res) => {
   const userId = req.params.id;
   
   try {
-  const user = await User.findById(userId).populate('followers');
+  const user = await Followers.findById(userId);
   if (user) {
-  const blogs = user.followers;
+  const blogs = user.IDUser;
   res.status(200).json(blogs);
   } else {
   res.status(404).json({ error: 'المستخدم غير موجود' });

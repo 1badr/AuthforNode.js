@@ -26,7 +26,6 @@ const userSchema = new mongoose.Schema({
   type: {
     type: String,
     enum: ['admin', 'user', 'employee', 'company'],
-    required: [true, 'Type is required'],
   },
   image: {
     type: String,
@@ -77,6 +76,10 @@ const userSchema = new mongoose.Schema({
   blog: {
     type: String,
     ref: 'Blogs',
+  },
+  jobs: {
+    type: String,
+    ref: 'Jobs',
   },
 });
 

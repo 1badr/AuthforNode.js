@@ -62,7 +62,7 @@ const getBlogLikes = async (req, res) => {
   const blogId = req.params.id;
 
   try {
-    const likes = await Like.find({ blog: blogId }).populate('likerName', 'name');
+    const likes = await Like.find({ IDblog: blogId });
 
     res.status(200).json(likes);
   } catch (error) {

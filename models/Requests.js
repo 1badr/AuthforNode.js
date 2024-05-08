@@ -4,7 +4,7 @@ const { ARRAY } = require('sequelize');
 const { boolean } = require('mathjs');
 const RequestsrsSchema = new mongoose.Schema ({
     userId : {
-        type : Array,
+        type : String,
         ref : "User",
     },
     date : {

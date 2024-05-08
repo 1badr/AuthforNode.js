@@ -4,12 +4,10 @@ const FollowersSchema = new mongoose.Schema ({
     IDUser: [{ 
         type:String,
         ref: 'User',
-        required : true
             }],
     IDFollower: {
         type: String,
         ref: 'User',
-        required : true
 
         }
 });
