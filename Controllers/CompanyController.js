@@ -22,20 +22,28 @@ const getTopFollowedCompanies = async (req, res) => {
   }
 };
 
-
-
 async function getCompanyJobs(req, res) {
-  const userId = req.params.userId;
+  const companyId = req.params.companyId;
 
   try {
-    // استعادة الوظائف المرتبطة بالمستخدم من جدول الوظائف
-    const userJobs = await Jobs.find({ IDUser: userId });
+    // const company = await User.findById(companyId);
 
-    res.status(200).json({ jobs: userJobs });
+    // if (!company) {
+    //   return res.status(404).json({ message: 'Company not found' });
+    // }
+
+    const companyJobs = await Jobs.find({ IDUser: companyId });
+
+    if (companyJobs.length === 0) {
+      return res.status(404).json({ message: 'No jobs found for this company' });
+    }
+
+    res.status(200).json({ jobs: companyJobs });
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
 
 
 

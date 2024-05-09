@@ -1,4 +1,5 @@
 const mongoose = require ('mongoose');
+const Categorey = require('./Categorey');
 
 const JobsSchema = new mongoose.Schema ({
     IDUser: {type: String, ref: "User"},
@@ -11,6 +12,10 @@ const JobsSchema = new mongoose.Schema ({
     image : {
         type : String,
         ref:"User"
+    },
+    Categorey : {
+        type : String,
+        enum: ['برمجة', 'تصميم', 'طب' , 'ادارة']   
     },
     bio : {
         type : String,

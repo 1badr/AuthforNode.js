@@ -132,40 +132,41 @@ const getJobById = async (req, res) => {
 
 
   async function handleCVRequest(req, res) {
-    const { userId, jobId } = req.body;
-  
+    const { jobId,userId } = req.body;
+    console.log(`${userId}    ${jobId}`)
     try {
       const cv = await CV.findOne({ userID: userId }).exec();
   
-      if (cv) {
-        const request = await Requests.findOneAndUpdate(
-          { userId, jobId },
-          { sentIt: true },
-          { new: true }
-        ).exec();
+      // if (cv) {
+      //   const request = await Requests.findOneAndUpdate(
+      //     { userId, jobId },
+      //     { sentIt: true },
+      //     { new: true }
+      //   ).exec();
   
-        if (request) {
-          const job = await Jobs.findById(jobId).exec();
-          const user = await User.findById(userId).exec();
+      //   if (request) {
+      //     const job = await Jobs.findById(jobId).exec();
+      //     const user = await User.findById(userId).exec();
   
-          const response = {
-            jobs: [
-              {
-                userId: request.userId,
-                jobId: request.jobId,
-                image: user.image,
-                jobName: job.name,
-                userName: user.name
-              }
-            ]
-          };
+      //     const response = {
+      //       jobs: [
+      //         {
+      //           userId: request.userId,
+      //           jobId: request.jobId,
+      //           image: user.image,
+      //           jobName: job.name,
+      //           userName: user.name
+      //         }
+      //       ]
+      //     };
   
-          return res.status(200).json(response);
-        } else {
-          return res.status(500).json({ error: 'Failed to update request' });
-        }
-      } else {
-        const request = new Requests({ userId, jobId });
+      //     return res.status(200).json(response);
+      //   } else {
+      //     return res.status(500).json({ error: 'Failed to update request' });
+      //   }
+      // } else
+       //{
+        const request = new Requests({ userId:userId, jobId });
         await request.save();
   
         const job = await Jobs.findById(jobId).exec();
@@ -175,16 +176,17 @@ const getJobById = async (req, res) => {
           jobs: [
             {
               userId: request.userId,
+              userId: request,
               jobId: request.jobId,
-              image: user.image,
-              jobName: job.name,
-              userName: user.name
+              // image: user.image,
+               jobName: job.name,
+              // userName: user.name
             }
           ]
         };
   
         return res.status(200).json(response);
-      }
+     // }
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -196,16 +198,16 @@ const getJobById = async (req, res) => {
     const jobId = req.params.id;
   
     try {
-      const requests = await Requests.find({ jobId, sentIt: true }).exec();
+      const requests = await Requests.find({ jobId }).exec();
   
       const userIds = requests.map(request => request.userId);
       const users = await User.find({ _id: { $in: userIds } }).exec();
-  
       const response = {
         jobs: requests.map(request => {
           const user = users.find(user => user._id.toString() === request.userId.toString());
+          console.log('error')
           const job = Jobs.findById(request.jobId).exec();
-  
+          
           return {
             userId: request.userId,
             jobId: request.jobId,
@@ -251,17 +253,23 @@ const getAllRequestsJobsInCompany = async (req, res) => {
           const user = users.find(user => user._id.toString() === request.userId.toString());
 
           return {
-            userId: request.userId,
-            jobId: request.jobId,
+            userId: requests.userId,
+            jobId: requests.jobId,
             image: user.image,
             jobName: job.name,
             userName: user.name
           };
         });
 
-        requestsByJob[job._id] = {
-          jobDetails: job,
-          requests: jobRequests
+        requestsByJob["job"] = {
+          // userId: requests.userId,
+          //   jobId: requests.jobId,
+          //   image: user.image,
+             jobName: job.name,
+             userName: user.name,
+            jobID: job._id,
+            requestuserid: job.requestsId,
+           requests: jobRequests
         };
       }
     }
