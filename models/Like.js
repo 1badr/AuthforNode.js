@@ -1,8 +1,8 @@
 const mongoose = require ('mongoose');
 
 const LikeSchema = new mongoose.Schema ({
-    IDUser: [{type: String, ref: "User", required: true}],
-    IDblog: [{type: String, ref: "Blogs", required: true}],
+    IDUser: {type: String, ref: "User"},
+    IDblog: {type: String, ref: "Blogs"},
 
 });
 const Like = mongoose.model('Like', LikeSchema);

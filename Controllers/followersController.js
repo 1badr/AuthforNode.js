@@ -109,11 +109,32 @@ const getUserFollowers = async (req, res) => {
   }
   };
 
+  const checkIfUserFollows = async (req, res) => {
+    try {
+      const { followerUserID, followedUserID } = req.body;
+  
+      const follower = await Followers.findOne({
+        IDUser: followerUserID,
+        IDFollower: followedUserID
+      }).exec();
+  
+      if (follower) {
+        return res.status(200).json(follower);
+      } else {
+        return res.status(404).json({ error: 'المستخدم غير موجود' });
+      }
+    } catch (error) {
+      console.log({ error: error.message });
+      return res.status(500).json({ error: 'حدث خطأ في الخادم' });
+    }
+  };
+
 
 
 module.exports =
 {
   followUser,
+  checkIfUserFollows,
   unFollowUser,
   getUserFollowers
 }

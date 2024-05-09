@@ -70,10 +70,29 @@ const getBlogLikes = async (req, res) => {
   }
 };
 
+const checkIfUserLikes = async (req, res) => {
+  try {
+    const { likerUserID, likedUserID } = req.body;
 
+    const likes = await Like.findOne({
+      IDUser: likerUserID,
+      IDblog: likedUserID
+    }).exec();
+
+    if (likes) {
+      return res.status(200).json(likes);
+    } else {
+      return res.status(404).json({ error: 'المستخدم غير موجود' });
+    }
+  } catch (error) {
+    console.log({ error: error.message });
+    return res.status(500).json({ error: 'حدث خطأ في الخادم' });
+  }
+};
 
 module.exports = {
   likePost,
   getUserLikes,
   getBlogLikes,
+  checkIfUserLikes,
 };

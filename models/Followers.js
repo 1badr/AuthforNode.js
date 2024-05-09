@@ -1,10 +1,10 @@
 const mongoose = require ('mongoose');
 
 const FollowersSchema = new mongoose.Schema ({
-    IDUser: [{ 
+    IDUser: { 
         type:String,
         ref: 'User',
-            }],
+            },
     IDFollower: {
         type: String,
         ref: 'User',

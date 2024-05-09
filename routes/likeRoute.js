@@ -17,5 +17,14 @@ router.get('/getBlogLikes/:id', likeController.getBlogLikes);
 http://localhost:8000/like/getBlogLikes/هنا حط الايدي
 
 
+router.post('/checkIfUserLikes', likeController.checkIfUserLikes);
+/**
+ * http://localhost:8000/like/checkIfUserLikes
+ * 
+ * {
+  "likerUserID":"662e63a31859045f23a1cb17",
+  "likedUserID":"65c5ff33309387466defdd75"
+}
+ */
 module.exports = router;
 
