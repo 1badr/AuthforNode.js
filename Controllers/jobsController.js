@@ -174,33 +174,30 @@ const getJobById = async (req, res) => {
       const jobId = req.body.jobId;
     
       try {
-        const requests = await Requests.find({ jobId: jobId, sentIt: true })
-          .populate({
-            path: 'userId',
-            model: 'User',
-            select: 'name image'
-          })
-          .populate({
-            path: 'jobId',
-            model: 'Jobs',
-            select: 'name'
-          });
+        const requests = await Requests.find({ jobId: jobId, sentIt: true });
     
-        const response = requests.map((request) => ({
-          requestId: request._id,
-          userId: request.userId._id,
-          userName: request.userId.name,
-          userImage: request.userId.image,
-          jobName: request.jobId.name
-        }));
+        const response = [];
+    
+        for (const request of requests) {
+          const user = await User.findById(request.userId);
+          const company = await User.findById(request.companyId);
+    
+          response.push({
+            requestId: request._id,
+            userId: request.userId,
+            userName: user ? user.name : '',
+            userImage: user ? user.image : '',
+            companyName: company ? company.name : '',
+            companyImage: company ? company.image : '',
+            jobName: request.jobId.name,
+          });
+        }
     
         res.status(200).json(response);
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
     };
-
-
 
 const getJobsByUserId = async (req, res) => {
   const IDUser = req.params.id;
