@@ -7,9 +7,7 @@ const CategoreySchema = new mongoose.Schema ({
         type : String,
         enum: ['برمجة', 'تصميم', 'طب' , 'ادارة']   
     },
-    likes_count: {
-         type: Number, default: 0 
-    }
+    
 });
 
 

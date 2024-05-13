@@ -26,6 +26,9 @@ const BlogsSchema = new mongoose.Schema({
     type: String,
     ref: 'Comment',
   },
+  categoryID: {
+    type: String,
+  },
 });
 
 const Blogs = mongoose.model('Blogs', BlogsSchema);
