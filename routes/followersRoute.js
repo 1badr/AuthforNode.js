@@ -11,7 +11,7 @@ router.post('/checkIfUserFollows', followersController.checkIfUserFollows);
 }
 http://localhost:8000/follo/follower
  */
-router.get('/getUserFollowers/:id', followersController.getUserFollowers);// ذا مايشتغل 
+router.get('/getFollowers/:id', followersController.getFollowers);// ذا مايشتغل 
 router.post('/unFollowUser', followersController.unFollowUser);
 /**http://localhost:8000/follo/unFollowUser  
  * {

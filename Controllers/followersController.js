@@ -91,23 +91,18 @@ const unFollowUser = async (req, res) => {
 };
 
 
+const getFollowers = async (req, res) => {
+  const IDUser = req.params.id;
 
-
-const getUserFollowers = async (req, res) => {
-  const userId = req.params.id;
-  
   try {
-  const user = await Followers.findById(userId);
-  if (user) {
-  const blogs = user.IDUser;
-  res.status(200).json(blogs);
-  } else {
-  res.status(404).json({ error: 'المستخدم غير موجود' });
-  }
+    const followers = await Followers.find({ IDFollower:IDUser }).populate('IDFollower');
+
+    res.status(200).json(followers);
   } catch (error) {
-  res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
-  };
+};
+
 
   const checkIfUserFollows = async (req, res) => {
     try {
@@ -134,7 +129,7 @@ const getUserFollowers = async (req, res) => {
 module.exports =
 {
   followUser,
+  getFollowers,
   checkIfUserFollows,
   unFollowUser,
-  getUserFollowers
 }

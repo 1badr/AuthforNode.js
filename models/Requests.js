@@ -5,13 +5,13 @@ const { boolean } = require('mathjs');
 const RequestsrsSchema = new mongoose.Schema ({
     userId : {
         type : String,
-        // ref : "User",
+        ref : "User",
     },
     date : {
          type: Date, default: Date.now ,
     },
     sentIt : {
-        type: boolean, default: false
+        type: Boolean,
 
     },
     jobId: {

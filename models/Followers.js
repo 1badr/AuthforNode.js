@@ -2,11 +2,11 @@ const mongoose = require ('mongoose');
 
 const FollowersSchema = new mongoose.Schema ({
     IDUser: { 
-        type:String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
             },
     IDFollower: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
 
         }

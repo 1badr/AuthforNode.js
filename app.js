@@ -268,6 +268,40 @@ app.get('/', function (req, res) {
 });
 
 
+const Router = express.Router();
+
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads"), // cb -> callback
+  filename: (req, file, cb) => {
+    const uniqueName = `${Date.now()}-${Math.round(
+      Math.random() * 1e9
+    )}${path.extname(file.originalname)}`;
+    cb(null, uniqueName);
+  },
+});
+
+
+const handleMultipartData = multer({
+  storage,
+  limits: { fileSize: 1000000 * 5 },
+}).single("image");
+
+app.post('/user', handleMultipartData, function(req, res) {
+  try {
+    // تتوفر الآن بيانات النموذج والملف في `req.body` و `req.file` على التوالي
+    res.json({
+      body: req.body,
+      file: req.file,
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'حدث خطأ في الخادم' });
+  }
+});
+
+
 var server = app.listen(8000,"0.0.0.0", function () {
  var host = server.address().address
  var port = server.address().port
