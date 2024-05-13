@@ -187,8 +187,8 @@ const getJobById = async (req, res) => {
             userId: request.userId,
             userName: user ? user.name : '',
             userImage: user ? user.image : '',
-            companyName: company ? company.name : '',
-            companyImage: company ? company.image : '',
+            UserRequestName: company ? company.name : '',
+            UserRequestImage: company ? company.image : '',
             jobName: request.jobId.name,
           });
         }
