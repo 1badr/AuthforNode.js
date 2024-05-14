@@ -18,6 +18,10 @@ const RequestsrsSchema = new mongoose.Schema ({
         type: String,
         ref: "Jobs",
     },
+    companyId: {
+        type: String,
+        ref: "User",
+    },
 });
 const Requests = mongoose.model('Requests', RequestsrsSchema);
 
