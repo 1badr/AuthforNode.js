@@ -41,83 +41,18 @@ const postblog = async (req, res) => {
       });
   };
   
-  const getArticlesByCommunityId = async (req, res) => {
-    try {
-      const communityId = req.params.communityId;
-      const community = await Community.findById(communityId);
-  
-      if (!community) {
-        return res.status(404).json({ error: 'Community not found' });
-      }
-  
-      if (community.userType !== 'Company') {
-        return res.status(403).json({ error: 'Access denied. Only companies can view articles in this community.' });
-      }
-  
-      const articles = await Blogs.find({ communityID: communityId })
-        .populate('communityID', '_id name')
-        .select('_id body')
-        .populate('author', '_id name')
-        .exec();
-  
-      if (articles.length === 0) {
-        return res.status(404).json({ error: 'No articles found in the community' });
-      }
-  
-      const response = {
-        communityId: communityId,
-        communityName: articles[0].communityID.name,
-        articles: articles.map((article) => ({
-          articleId: article._id,
-          communityId: communityId,
-          body: article.body,
-        })),
-      };
-  
-      res.json(response);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  };
 
-  const getCommunityById = async (req, res) => {
-    try {
-      const communityId = req.params.id;
-      const community = await Community.findById(communityId);
-  
-      if (!community) {
-        return res.status(404).json({ message: 'Community not found' });
-      }
-  
-      if (community.userType !== 'User' && community.userType !== 'Company') {
-        return res.status(400).json({ message: 'Invalid user type' });
-      }
-  
-      const articles = await Blogs.find({ communityID: communityId })
-        .populate('communityID', '_id name')
-        .select('_id body')
-        .populate('author', '_id name')
-        .exec();
-  
-      if (!articles) {
-        console.log('err')
-        return res.status(404).json({ error: 'No articles found in the community' });
-      }
-      const response = {
-        communityId: communityId,
-        communityName: articles[0].communityID.name,
-        articles: articles.map((article) => ({
-          articleId: article._id,
-          communityId: communityId,
-          body: article.body,
-        })),
-      };
-  
-      res.json(response);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  };
+ const getArticlesByCommunityId = async (req, res) => {
+  const communityId = req.params.communityId;
+
+  try {
+    const community = await Community.findById(communityId);
+
+    res.status(200).json(community)
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 
   const getArticleById = async function (req, res) {
@@ -172,6 +107,5 @@ module.exports = {
     getUserBlogs,
     getArticlesUserInLimit,
     getArticlesByCommunityId,
-    getCommunityById
 }
 

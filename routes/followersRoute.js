@@ -13,6 +13,7 @@ http://localhost:8000/follo/follower
  */
 router.get('/getFollowers/:id', followersController.getFollowers);// ذا مايشتغل 
 router.post('/unFollowUser', followersController.unFollowUser);
+router.post('/followerUser', followersController.followerUser);
 /**http://localhost:8000/follo/unFollowUser  
  * {
   "userId":"662fb3e4a5a76f34a336d59e",

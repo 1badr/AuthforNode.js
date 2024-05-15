@@ -2,14 +2,16 @@ const mongoose = require ('mongoose');
 
 const FollowersSchema = new mongoose.Schema ({
     IDUser: { 
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
             },
     IDFollower: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
-
-        }
+        },
+    following: {
+        type: Boolean, default: false 
+    }
 });
 const Followers = mongoose.model('Followers', FollowersSchema);
 

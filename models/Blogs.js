@@ -11,12 +11,12 @@ const BlogsSchema = new mongoose.Schema({
     type: String,
     enum: ['user', 'company']
   },
-  likes: [{
-    type: mongoose.Schema.Types.ObjectId,
+  likes: {
+    type: String,
     ref: 'Like',
-  }],
+  },
   author: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'User',
   },
   comment: {
@@ -24,7 +24,7 @@ const BlogsSchema = new mongoose.Schema({
     ref: 'Comment',
   },
   communityID: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "Community"
   },
 });

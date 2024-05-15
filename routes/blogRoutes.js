@@ -9,7 +9,6 @@ router.get('/getArticleById/:id', blogConreoller.getArticleById);
 router.get('/getUserBlogs/:id', blogConreoller.getUserBlogs);
 router.get('/getArticlesUserInLimit/:id', blogConreoller.getArticlesUserInLimit);
 router.get('/getArticlesByCommunityId/:id', blogConreoller.getArticlesByCommunityId);
-router.get('/getCommunityById/:id', blogConreoller.getCommunityById);
 
 
 

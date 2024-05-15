@@ -125,6 +125,51 @@ const getFollowers = async (req, res) => {
   };
 
 
+  const followerUser = async (req, res) => {
+    try {
+      const followerId = req.body.followerId; // معرف المتابع
+      const followingId = req.body.followingId; // معرف المستخدم المُتابَع له
+  
+      // Find the follower user
+      const follower = await User.findById(followerId);
+  
+      if (!follower) {
+        return res.status(404).json({ error: 'Follower not found' });
+      }
+  
+      // Find the following user
+      const following = await User.findById(followingId);
+  
+      if (!following) {
+        return res.status(404).json({ error: 'Following user not found' });
+      }
+  
+      // Check if the follower is already following the user
+      const isFollowing = follower.following && follower.following.includes(followingId);
+  
+      if (isFollowing) {
+        // If already following, remove the following relationship
+        follower.following = follower.following.filter((id) => id.toString() !== followingId);
+        following.followers = following.followers.filter((id) => id.toString() !== followerId);
+  
+        await follower.save();
+        await following.save();
+  
+        res.json({ message: 'Unfollowed', isFollowing: false });
+      } else {
+        // If not following, add the following relationship
+        follower.following.push(followingId);
+        following.followers.push(followerId);
+  
+        await follower.save();
+        await following.save();
+  
+        res.json({ message: 'Followed', isFollowing: true });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 
 module.exports =
 {
@@ -132,4 +177,5 @@ module.exports =
   getFollowers,
   checkIfUserFollows,
   unFollowUser,
+  followerUser
 }
