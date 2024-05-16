@@ -45,7 +45,7 @@ const followUser = async (req, res) => {
 
       await followersEntry.save();
 
-      res.json({ message: 'Followed' });
+      res.json({ message: 'Followed', following:true });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -79,7 +79,7 @@ const unFollowUser = async (req, res) => {
 
       await user.save();
 
-      res.json({ message: 'Unfollowed' });
+      res.json({ message: 'Unfollowed', following:false });
     } else {
       res.json({ message: "User is not following the target user" });
     }
