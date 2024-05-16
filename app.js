@@ -7,6 +7,7 @@ const cookieSession = require('cookie-session')
 const Keys = require('./config/Keys')
 const router = express.Router();
 
+app.set('view engine', 'ejs');
 
 app.use(passport.initialize());
 

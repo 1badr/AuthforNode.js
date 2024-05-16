@@ -48,33 +48,70 @@ module.exports.signup_get = (req,res) => {
 module.exports.login_get = (req,res) => {
     res.render('login');
 }
+const multer = require("multer");
+const path = require("path");
 
-module.exports.signup_post = async (req,res) => {
-    const { email ,
-      password ,
-      name,
-      type,
-      image,
-      location,
-      categorey,
-      gender,
-      bio,
-      employeeCount,
-      companyCreateAt,
-      CV,
-      comment,
-      followers,
-      blog,
-    } = req.body;
-    
+// تعيين خيارات التخزين
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads"), // المجلد الذي سيتم تخزين الصور فيه
+  filename: (req, file, cb) => {
+    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(
+      file.originalname
+    )}`;
+    cb(null, uniqueName);
+  },
+});
+
+// تكوين multer
+const upload = multer({
+  storage,
+  limits: { fileSize: 1000000 * 5 }, // حد حجم الملف المسموح به (5 ميجابايت)
+}).single("image"); // اسم حقل الصورة في النموذج
+
+// معالجة طلب الاشتراك
+module.exports.signup_post = async (req, res) => {
+  // تحميل الصورة باستخدام multer
+  upload(req, res, async (err) => {
+    if (err) {
+      // حدث خطأ أثناء تحميل الصورة
+      console.error(err);
+      return res.status(500).json({ error: "حدث خطأ أثناء تحميل الصورة" });
+    }
+
     try {
-        let user = await User.create({
-        email ,
-        password 
-        ,name,type,
+      const {
+        email,
+        password,
+        name,
+        type,
+        location,
+        category,
+        gender,
+        bio,
+        employeeCount,
+        companyCreateAt,
+        CV,
+        comment,
+        followers,
+        blog,
+      } = req.body;
+
+      let image = ""; // اسم الملف الذي سيتم حفظه في قاعدة البيانات
+
+      if (req.file) {
+        // تم تحميل صورة
+        image = req.file.filename; // اسم الملف الذي تم تخزينه في المجلد
+      }
+
+      // إنشاء المستخدم الجديد بما في ذلك الصورة
+      const user = await User.create({
+        email,
+        password,
+        name,
+        type,
         image,
         location,
-        categorey,
+        category,
         gender,
         bio,
         employeeCount,
@@ -84,17 +121,16 @@ module.exports.signup_post = async (req,res) => {
         followers,
         blog,
       });
-        const token = createToken(user._id);
-        res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000});
-        res.status(201).json({ type: user.type, id: user._id});
-    }
-    catch (err){
-        let error = handleErrors(err)
-        res.status(400).json({error})
 
+      const token = createToken(user._id);
+      res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+      res.status(201).json({ type: user.type, id: user._id });
+    } catch (err) {
+      let error = handleErrors(err);
+      res.status(400).json({ error });
     }
-}
-
+  });
+};
 
 
 module.exports.signupCompany = async (req,res) => {
