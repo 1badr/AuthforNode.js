@@ -198,38 +198,69 @@ const getJobById = async (req, res) => {
         res.status(500).json({ error: error.message });
       }
     };
+    const getJobsByCompanyId = async (req, res) => {
+      const userId = req.params.userId;
+    
+      try {
+        // الحصول على جميع الوظائف للمستخدم المحدد
+        const jobs = await Jobs.find({ userId });
+    
+        // الحصول على جميع الطلبات المرتبطة بالوظائف
+        const requests = await Requests.find({ jobId: { $in: jobs.map(job => job._id) } });
+    
+        const response = [];
+    
+        for (const request of requests) {
+          const job = jobs.find(job => job._id.toString() === request.jobId.toString());
+          const company = await User.findById(request.companyId);
+    
+          response.push({
+            requestId: request._id,
+            jobId: request.jobId,
+            jobName: job ? job.name : '',
+            userId: request.userId,
+            userName: job ? job.name : '',
+            userImage: job ? job.image : '',
+            UserRequestName: company ? company.name : '',
+            UserRequestImage: company ? company.image : '',
+          });
+        }
+    
+        res.status(200).json(response);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    };
 
-const getJobsByUserId = async (req, res) => {
-  const IDUser = req.params.id;
+    const getRequestsByUserId = async (req, res) => {
+      const userId = req.params.userId;
+    
+      try {
+        const requests = await Requests.find({ userId });
+        const response = [];
+    
+        for (const request of requests) {
+          const job = await Jobs.findById(request.jobId);
+          const company = await User.findById(request.companyId);
+    
+          response.push({
+            requestId: request._id,
+            userId: request.userId,
+            userName: request.userName,
+            userImage: request.userImage,
+            UserRequestName: company ? company.name : '',
+            UserRequestImage: company ? company.image : '',
+            jobName: job ? job.name : '',
+          });
+        }
+    
+        res.status(200).json(response);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    };
 
-  try {
-
-    const jobs = await Jobs.find({  IDUser })
-      .select('_id name')
-      .populate({
-        path: 'IDUser',
-        model: 'User',
-        select: '_id image'
-      });
-        const users = await User.find({ _id: { $in: IDUser } }).exec();
-
-          const user = users.find(user => user._id.toString() === IDUser.toString());
-
-    const formattedJobs = jobs.map((job) => ({
-      jobId: job._id,
-      jobName: job.name,
-      IDUser:IDUser,
-      userName: user.name,
-      userImage: user.image,
-    }));
-
-    res.status(200).json(formattedJobs);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-  
-
+    
 module.exports = {
     deleteJobs,
     postJobs,
@@ -241,6 +272,7 @@ module.exports = {
     getJobsById,
     handleCVRequest,
     getRequestsByJobId,
-    getJobsByUserId
+    getJobsByCompanyId,
+    getRequestsByUserId
 }
 
