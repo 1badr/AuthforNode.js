@@ -3,6 +3,13 @@ const followersController = require('../Controllers/followersController');
 const router = express.Router();
 
 router.post('/follower', followersController.followUser);
+
+/**
+ * http://localhost:8000/follo/follower
+ * {
+  "userId":"662e62f91859045f23a1cb0b",
+  "targetUserId":"66246ee771bc5fbd7c7a355b"
+} */
 router.post('/checkIfUserFollows', followersController.checkIfUserFollows);
 /**
  * {
@@ -11,7 +18,8 @@ router.post('/checkIfUserFollows', followersController.checkIfUserFollows);
 }
 http://localhost:8000/follo/follower
  */
-router.get('/getFollowers/:id', followersController.getFollowers);// ذا مايشتغل 
+router.get('/getFollowers/:id', followersController.getFollowers);
+/** http://localhost:8000/follo/getFollowers/662e62f91859045f23a1cb0b */
 router.post('/unFollowUser', followersController.unFollowUser);
 /**http://localhost:8000/follo/unFollowUser  
  * {

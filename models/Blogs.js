@@ -1,4 +1,3 @@
-const { string } = require('mathjs');
 const mongoose = require('mongoose');
 
 const BlogsSchema = new mongoose.Schema({
@@ -10,14 +9,12 @@ const BlogsSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['user','company']   
+    enum: ['user', 'company']
   },
-  likes: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Like',
-    },
-  ],
+  likes: {
+    type: String,
+    ref: 'Like',
+  },
   author: {
     type: String,
     ref: 'User',
@@ -26,8 +23,9 @@ const BlogsSchema = new mongoose.Schema({
     type: String,
     ref: 'Comment',
   },
-  categoryID: {
+  communityID: {
     type: String,
+    ref: "Community"
   },
 });
 

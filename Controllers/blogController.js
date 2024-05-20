@@ -5,6 +5,7 @@ const { result } = require('lodash');
 const { async } = require('seed/lib/seed');
 const Blogs = require('../models/Blogs');
 const Community = require('../models/Community');
+const Comments = require('../models/Comments');
 
 const deleteblog = (req, res) => {
   const id = req.params.id ;
@@ -41,10 +42,23 @@ const postblog = async (req, res) => {
   };
   
 
+ const getArticlesByCommunityId = async (req, res) => {
+  const communityId = req.params.communityId;
+
+  try {
+    const community = await Community.findById(communityId);
+
+    res.status(200).json(community)
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
   const getArticleById = async function (req, res) {
     try {
       const articleId = req.params.id; 
-      const article = await Blog.findById(articleId);
+      const article = await Blog.findById({articleId});
       
       if (!article) {
         return res.status(404).json({ error: 'Not Found' });
@@ -91,6 +105,7 @@ module.exports = {
     ubdateblog,
     getArticleById,
     getUserBlogs,
-    getArticlesUserInLimit
+    getArticlesUserInLimit,
+    getArticlesByCommunityId,
 }
 

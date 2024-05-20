@@ -12,7 +12,6 @@ const CommunitySchema = new mongoose.Schema ({
         enum: ['برمجة', 'تصميم', 'طب' , 'ادارة']   
 
     },
-    members: [{type: String, ref: "User"}],
     create_at: {
         type: Date,
         default: Date.now
@@ -21,10 +20,10 @@ const CommunitySchema = new mongoose.Schema ({
         type : String,
         enum: ["User","Company"] 
     },
-    IDMessages: [{type: String, ref: "Messages"}]
+    IDMessages: {type: String, ref: "Messages"}
 
 
 });
-const Community = mongoose.model('Comu', CommunitySchema);
+const Community = mongoose.model('Community', CommunitySchema);
 
 module.exports = Community;

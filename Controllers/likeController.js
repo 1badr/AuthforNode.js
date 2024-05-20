@@ -22,23 +22,27 @@ const likePost = async (req, res) => {
     }
 
     // Check if the user has already liked the post
-    const isLiked = blog.likes.some((like) => like.IDUser.toString() === userId);
+    const existingLike = blog.likes.find((like) => like.IDUser && like.IDUser.toString() === userId);
 
-    if (isLiked) {
-      // If already liked, remove the like
-      blog.likes = blog.likes.filter((like) => like.IDUser.toString() !== userId);
+    if (existingLike) {
+      // If already liked, remove the like and set liked to false
+      blog.likes = blog.likes.filter((like) => like.IDUser && like.IDUser.toString() !== userId);
       await blog.save();
 
-      res.json({ message: 'Unliked' });
+      // Update the existing like document
+      existingLike.liked = false;
+      await existingLike.save();
+
+      res.json({ message: 'Unliked', liked: false });
     } else {
       // If not liked, add the like
-      const newLike = new Like({ IDUser: userId, IDblog: blog._id });
+      const newLike = new Like({ IDUser: userId, IDblog: blog._id, liked: true });
       await newLike.save();
 
       blog.likes.push(newLike);
       await blog.save();
 
-      res.json({ message: 'Liked' });
+      res.json({ message: 'Liked', liked: true });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
