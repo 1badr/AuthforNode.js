@@ -59,40 +59,84 @@ const filterBlogsByUserType = async (req, res) => {
   }
 };
 
+
+
 const filterJobs = async (req, res) => {
+
+
+  const { name, location, salary, experience ,Categorey,
+    bio,
+    workSchedule,
+    type,
+    CVs,
+    education,
+    skills,
+    certificate,
+    createdAtYear,
+    createdAtMonth,
+
+  } = req.body;
   const filter = {};
 
-  if (req.body.name) {
-    filter.name = req.body.name;
+  if (name) {
+    filter.name = { $regex: name, $options: 'i' };
   }
-  if (req.body.category) {
-    filter.category = req.body.category;
+  if (Categorey) {
+    filter.Categorey = { $regex: Categorey, $options: 'i' };
   }
-  if (req.body.workSchedule) {
-    filter.workSchedule = req.body.workSchedule;
+  if (bio) {
+    filter.bio = { $regex: bio, $options: 'i' };
   }
-  if (req.body.type) {
-    filter.type = req.body.type;
+  if (workSchedule) {
+    filter.workSchedule = { $regex: workSchedule, $options: 'i' };
   }
-  if (req.body.education) {
-    filter.education = req.body.education;
+  if (type) {
+    filter.type = { $regex: type, $options: 'i' };
+  }
+  if (CVs) {
+    filter.CVs = { $regex: CVs, $options: 'i' };
+  }
+  if (education) {
+    filter.education = { $regex: education, $options: 'i' };
+  }
+  if (skills) {
+    filter.skills = { $regex: skills, $options: 'i' };
   }
 
-  // Remove empty properties from the filter object
-  Object.keys(filter).forEach((key) => {
-    if (!filter[key]) {
-      delete filter[key];
-    }
-  });
+  if (location) {
+    filter.location = { $regex: location, $options: 'i' };
+  }
+
+  if (salary) {
+    filter.salary = { $regex: salary, $options: 'i' };
+  }
+
+  if (experience) {
+    filter.experience = { $regex: experience, $options: 'i' };
+  }
+  if (certificate) {
+    filter.certificate = { $regex: certificate, $options: 'i' };
+  }
+  if (createdAtYear) {
+    filter.createdAt = { $gte: new Date(createdAtYear, 0, 1), $lte: new Date(createdAtYear, 11, 31) };
+  }
+  if (createdAtMonth) {
+    filter.createdAt = { $gte: new Date(createdAtYear, createdAtMonth - 1, 1), $lte: new Date(createdAtYear, createdAtMonth, 0) };
+  }
+  
 
   try {
     const jobs = await Jobs.find(filter);
-
     res.status(200).json(jobs);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+
+
+
 
 module.exports = {
   search,
