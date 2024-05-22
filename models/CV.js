@@ -14,6 +14,9 @@ const CVSchema = new mongoose.Schema ({
     email : {
         type : String,
     },
+    cv_image : {
+        type : String,
+    },
     languages: {type: Array },
     education: {type: Array },
     experience: {type: Array},

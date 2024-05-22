@@ -1,18 +1,51 @@
 const { restart } = require('nodemon');
 const CV = require ('../../models/CV');
 const User = require ('../../models/User');
+const multer = require('multer');
+const path = require('path');
 
-const { result } = require('lodash');
 
+const upload = require('../../config/multerConfig');
 
 const postCV = async (req, res) => {
-    const CVs = new CV(req.body);
-    CVs.save()
-      .then((result) => {
-        res.status(201).json({ CVs: CVs._id });
-      });
-  };
+  try {
+    await upload(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ message: err.message });
+      }
 
+      const {
+        fullName,
+        address,
+        phone,
+        email,
+        userID,
+      } = req.body;
+
+      const files = req.files;
+
+      const newCV = new CV({
+        fullName,
+        address,
+        phone,
+        email,
+        cv_image: files.find((file) => file.fieldname === 'cv_image')?.filename,
+        languages: files.filter((file) => file.fieldname === 'languages').map((file) => file.filename),
+        education: files.filter((file) => file.fieldname === 'education').map((file) => file.filename),
+        experience: files.filter((file) => file.fieldname === 'experience').map((file) => file.filename),
+        skills: files.filter((file) => file.fieldname === 'skills').map((file) => file.filename),
+        certificate: files.filter((file) => file.fieldname === 'certificate').map((file) => file.filename),
+        userID,
+      });
+
+      await newCV.save();
+
+      res.status(201).json(newCV);
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
   
 const deleteCV = async (req,res) => {
   const id = req.params.id ;
