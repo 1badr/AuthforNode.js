@@ -23,24 +23,13 @@ const getTopFollowedCompanies = async (req, res) => {
 };
 
 async function getCompanyJobs(req, res) {
-  const companyId = req.params.companyId;
+  const jobId = req.params.id;
 
   try {
-    // const company = await User.findById(companyId);
-
-    // if (!company) {
-    //   return res.status(404).json({ message: 'Company not found' });
-    // }
-
-    const companyJobs = await Jobs.find({ IDUser: companyId });
-
-    if (companyJobs.length === 0) {
-      return res.status(404).json({ message: 'No jobs found for this company' });
-    }
-
-    res.status(200).json({ jobs: companyJobs });
+    const requests = await Jobs.find({IDUser: jobId })
+    res.status(200).json(requests);
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ error: error.message });
   }
 }
 

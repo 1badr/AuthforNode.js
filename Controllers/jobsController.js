@@ -144,25 +144,31 @@ const getJobById = async (req, res) => {
         if (!job) {
           throw new Error('Invalid job');
         }
-        const request = new Requests({
-          userId: userId,
-          jobId: jobId,
-          sentIt: true
-        });
-        await request.save();
-        const response = {
-          jobs: [
-            {
-              userId: userId,
-              jobId: jobId,
-              image: user.image,
-              jobName: job.name,
-              userName: user.name
-            }
-          ]
-        };
-    
-        res.status(200).json(response);
+        const checkRequest =await Requests.findOne({userId:userId,jobId:jobId});
+        if (checkRequest) {
+          res.status(200).json({requestMessege:"انت مقدم على هذه الوظيفة"});
+        } else {
+          const request = new Requests({
+            userId: userId,
+            jobId: jobId,
+            sentIt: true
+          });
+          await request.save();
+          const response = {
+            jobs: [
+              {
+                userId: userId,
+                jobId: jobId,
+                image: user.image,
+                jobName: job.name,
+                userName: user.name
+              }
+            ]
+          };
+      
+          res.status(200).json(response);
+        }
+       
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
@@ -199,11 +205,11 @@ const getJobById = async (req, res) => {
       }
     };
     const getJobsByCompanyId = async (req, res) => {
-      const userId = req.params.userId;
+      const userId = req.params.id;
     
       try {
         // الحصول على جميع الوظائف للمستخدم المحدد
-        const jobs = await Jobs.find({ userId });
+        const jobs = await Jobs.find({IDUser: userId });
     
         // الحصول على جميع الطلبات المرتبطة بالوظائف
         const requests = await Requests.find({ jobId: { $in: jobs.map(job => job._id) } });
@@ -212,17 +218,17 @@ const getJobById = async (req, res) => {
     
         for (const request of requests) {
           const job = jobs.find(job => job._id.toString() === request.jobId.toString());
-          const company = await User.findById(request.companyId);
+          const user = await User.findById(request.userId);
     
           response.push({
             requestId: request._id,
             jobId: request.jobId,
             jobName: job ? job.name : '',
             userId: request.userId,
-            userName: job ? job.name : '',
+            // userName: job ? job.name : '',
             userImage: job ? job.image : '',
-            UserRequestName: company ? company.name : '',
-            UserRequestImage: company ? company.image : '',
+            UserRequestName: user ? user.name : '',
+            UserRequestImage: user ? user.image : '',
           });
         }
     
