@@ -8,34 +8,40 @@ const followUser = async (req, res) => {
     const userId = req.body.userId; 
     const targetUserId = req.body.targetUserId; 
 
-    const user = await User.findById(userId);
+    // const user = await User.findById(userId);
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    // if (!user) {
+    //   return res.status(404).json({ error: "User not found" });
+    // }
 
-    // Find the target user
-    const targetUser = await User.findById(targetUserId);
+    // // Find the target user
+    // const targetUser = await User.findById(targetUserId);
 
-    if (!targetUser) {
-      return res.status(404).json({ error: "Target user not found" });
-    }
+    // if (!targetUser) {
+    //   return res.status(404).json({ error: "Target user not found" });
+    // }
 
-    const isFollowing = user.following && user.following.includes(targetUserId);
+    // const isFollowing = user.following && user.following.includes(targetUserId);
+    const user = await Followers.findOne({ IDUser: userId,IDFollower: targetUserId  });
+    // const targetUser = await Followers.findOne({ IDFollower: targetUserId });
 
-    if (isFollowing) {
-      const followIndex = user.following.indexOf(targetUserId);
-      user.following.splice(followIndex, 1);
+    if (user) {
+      // const followIndex = user.following.indexOf(targetUserId);
+      // user.following.splice(followIndex, 1);
+
+      // await user.save();
+      user.following = true;
 
       await user.save();
 
-      res.json({ message: 'Unfollowed' });
+      res.json({ message: 'followed ', following:true });
+      // res.json({ message: 'Unfollowed' });
     } else {
 
-      user.following = user.following || [];
-      user.following.push(targetUserId);
+      // user.following = user.following || [];
+      // user.following.push(targetUserId);
 
-      await user.save();
+      // await user.save();
 
       const followersEntry = new Followers({
         IDUser: userId,
@@ -59,25 +65,29 @@ const unFollowUser = async (req, res) => {
     const userId = req.body.userId; 
     const targetUserId = req.body.targetUserId; 
 
-    const user = await Followers.findOne({ IDUser: userId });
+    // const user = await Followers.findOne({ IDUser: userId });
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
+    // if (!user) {
+    //   return res.status(404).json({ error: "User not found" });
+    // }
 
-    const targetUser = await Followers.findOne({ IDFollower: targetUserId });
+    // const targetUser = await Followers.findOne({ IDFollower: targetUserId });
 
-    if (!targetUser) {
-      return res.status(404).json({ error: "Target user not found" });
-    }
+    // if (!targetUser) {
+    //   return res.status(404).json({ error: "Target user not found" });
+    // }
 
-    const isFollowing = user.following;
+    // const isFollowing = user.following;
+    const follower = await Followers.findOne({
+      IDUser: userId,
+      IDFollower: targetUserId
+    }).exec();
 
-    if (isFollowing) {
+    if (follower) {
 
-      user.following = false;
+      follower.following = false;
 
-      await user.save();
+      await follower.save();
 
       res.json({ message: 'Unfollowed', following:false });
     } else {
@@ -113,9 +123,9 @@ const getFollowers = async (req, res) => {
       }).exec();
   
       if (follower) {
-        return res.status(200).json(follower);
+        return res.status(200).json({isFollowing : follower.following});
       } else {
-        return res.status(404).json({ error: 'المستخدم غير موجود' });
+        return res.status(200).json({isFollowing : false});
       }
     } catch (error) {
       console.log({ error: error.message });
