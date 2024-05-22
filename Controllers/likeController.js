@@ -4,38 +4,32 @@ const Like = require('../models/Like');
 
 const likePost = async (req, res) => {
   try {
-    const userId = req.body.userId; // معرف المستخدم
-    const postId = req.body.postId; // معرف المنشور
-
-    // Find the user
+    const userId = req.body.userId; 
+    const postId = req.body.postId; 
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Find the post
     const blog = await Blog.findById(postId).populate('likes');
 
     if (!blog) {
       return res.status(404).json({ error: 'Post not found' });
     }
 
-    // Check if the user has already liked the post
     const existingLike = blog.likes.find((like) => like.IDUser && like.IDUser.toString() === userId);
 
     if (existingLike) {
-      // If already liked, remove the like and set liked to false
       blog.likes = blog.likes.filter((like) => like.IDUser && like.IDUser.toString() !== userId);
       await blog.save();
 
-      // Update the existing like document
       existingLike.liked = false;
       await existingLike.save();
 
       res.json({ message: 'Unliked', liked: false });
     } else {
-      // If not liked, add the like
+
       const newLike = new Like({ IDUser: userId, IDblog: blog._id, liked: true });
       await newLike.save();
 

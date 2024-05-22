@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose');
 
 const BlogsSchema = new mongoose.Schema({
@@ -9,7 +10,7 @@ const BlogsSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['user', 'company']
+    enum: ['user', 'company'],
   },
   likes: {
     type: String,
@@ -23,9 +24,13 @@ const BlogsSchema = new mongoose.Schema({
     type: String,
     ref: 'Comment',
   },
+  saves: {
+    type: String,
+    ref: 'Save',
+  },
   communityID: {
     type: String,
-    ref: "Community"
+    ref: 'Community',
   },
 });
 

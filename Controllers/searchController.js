@@ -58,145 +58,88 @@ const filterBlogsByUserType = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-const searchByLocation = async function (location) {
-  try {
-    const users = await User.find({
-      location: { $regex: new RegExp(location, 'i') }
-    });
-    return users;
-  } catch (error) {
-    throw new Error(`Failed to search users by location: ${error.message}`);
+
+
+
+const filterJobs = async (req, res) => {
+
+
+  const { name, location, salary, experience ,Categorey,
+    bio,
+    workSchedule,
+    type,
+    CVs,
+    education,
+    skills,
+    certificate,
+    createdAtYear,
+    createdAtMonth,
+
+  } = req.body;
+  const filter = {};
+
+  if (name) {
+    filter.name = { $regex: name, $options: 'i' };
   }
-};
-
-const searchByGender = async function (gender) {
-  try {
-    const users = await this.find({ gender });
-    return users;
-  } catch (error) {
-    throw Error('Failed to search users by gender');
+  if (Categorey) {
+    filter.Categorey = { $regex: Categorey, $options: 'i' };
   }
-};
-
-
-const getworkScheduleJobs = async function () {
-  try {
-    const workScheduleJobs = await Jobs.find({ workSchedule });
-    return workScheduleJobs;
-  } catch (error) {
-    throw new Error('فشل في استرداد الوظائف عن بُعد');
+  if (bio) {
+    filter.bio = { $regex: bio, $options: 'i' };
   }
-};
-
-
-
-
-const getTypeJobs = async function () {
-  try {
-    const remoteJobs = await Jobs.find({ type });
-    return remoteJobs;
-  } catch (error) {
-    throw new Error('فشل في استرداد الوظائف عن بُعد');
+  if (workSchedule) {
+    filter.workSchedule = { $regex: workSchedule, $options: 'i' };
   }
-};
-
-const getCategoreyJobs = async function () {
-  try {
-    const remoteJobs = await Category.find({ type });
-    return remoteJobs;
-  } catch (error) {
-    throw new Error('فشل في استرداد الوظائف عن بُعد');
+  if (type) {
+    filter.type = { $regex: type, $options: 'i' };
   }
-};
-
-
-
-const getJobsByEducation = async function (education) {
-  try {
-    const jobs = await Jobs.find({ education });
-    return jobs;
-  } catch (error) {
-    throw new Error('فشل في استرداد الوظائف بناءً على نوع الشهادة');
+  if (CVs) {
+    filter.CVs = { $regex: CVs, $options: 'i' };
   }
-};
-
-
-
-const getUserByEducation = async function (education) {
-  try {
-    const jobs = await CV.find({ education });
-    return jobs;
-  } catch (error) {
-    throw new Error('فشل في استرداد الوظائف بناءً على نوع الشهادة');
+  if (education) {
+    filter.education = { $regex: education, $options: 'i' };
   }
-};
+  if (skills) {
+    filter.skills = { $regex: skills, $options: 'i' };
+  }
 
+  if (location) {
+    filter.location = { $regex: location, $options: 'i' };
+  }
 
-const getFilteredJobs = async function (req, res) {
+  if (salary) {
+    filter.salary = { $regex: salary, $options: 'i' };
+  }
+
+  if (experience) {
+    filter.experience = { $regex: experience, $options: 'i' };
+  }
+  if (certificate) {
+    filter.certificate = { $regex: certificate, $options: 'i' };
+  }
+  if (createdAtYear) {
+    filter.createdAt = { $gte: new Date(createdAtYear, 0, 1), $lte: new Date(createdAtYear, 11, 31) };
+  }
+  if (createdAtMonth) {
+    filter.createdAt = { $gte: new Date(createdAtYear, createdAtMonth - 1, 1), $lte: new Date(createdAtYear, createdAtMonth, 0) };
+  }
+  
+
   try {
-    const today = new Date();
-    const lastWeek = new Date();
-    lastWeek.setDate(lastWeek.getDate() - 7);
-    const lastMonth = new Date();
-    lastMonth.setMonth(lastMonth.getMonth() - 1);
-
-    const blogs = await Blogs.find({
-      createdAt: { $gte: lastWeek, $lte: today },
-    });
-
-    const users = await User.find({ type: 'company' });
-
-    const filteredUsers = users.filter((user) => {
-      const userCreatedAt = user.createdAt.getTime();
-      return (
-        userCreatedAt >= lastMonth.getTime() && userCreatedAt <= today.getTime()
-      );
-    });
-
-    const location = req.query.location;
-    const gender = req.query.gender;
-    const workSchedule = req.query.workSchedule;
-    const education = req.query.education;
-
-    const locationJobs = await Jobs.find({ location });
-    const genderJobs = await Jobs.find({ gender });
-    const workScheduleJobs = await Jobs.find({ workSchedule });
-    const educationJobs = await Jobs.find({ education });
-
-    const totalJobCount =
-      blogs.length +
-      filteredUsers.length +
-      locationJobs.length +
-      genderJobs.length +
-      workScheduleJobs.length +
-      educationJobs.length;
-
-    const results = {
-      blogs,
-      users: filteredUsers,
-      locationJobs,
-      genderJobs,
-      workScheduleJobs,
-      educationJobs,
-      totalJobCount,
-    };
-
-    res.json(results);
+    const jobs = await Jobs.find(filter);
+    res.status(200).json(jobs);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
 
+
+
+
+
 module.exports = {
   search,
-  searchByLocation,
-  searchByGender,
   filterBlogsByUserType,
-  getworkScheduleJobs,
-  getTypeJobs,
-  getCategoreyJobs,
-  getJobsByEducation,
-  getUserByEducation,
-  getFilteredJobs
+  filterJobs,
 };
