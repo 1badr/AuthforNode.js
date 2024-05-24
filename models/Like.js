@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const LikeSchema = new mongoose.Schema({
   IDUser: { type: String, ref: "User" },
   IDblog: { type: String, ref: "Blogs" },
-  liked: { type: Boolean, default: null }
+  liked: { type: Boolean, default: false }
 });
 
 const Like = mongoose.model("Like", LikeSchema);
