@@ -2,6 +2,7 @@
   "dependencies": {
     "@types/ws": "^8.5.10",
     "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
     "compute-cosine-similarity": "^1.1.0",
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.1.0",
