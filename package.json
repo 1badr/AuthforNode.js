@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@types/ws": "^8.5.10",
     "bcrypt": "^5.1.1",
     "compute-cosine-similarity": "^1.1.0",
     "cookie-parser": "^1.4.6",
@@ -25,7 +26,8 @@
     "session-rememberme": "^18.0.0",
     "socket.io": "^4.7.2",
     "validator": "^13.11.0",
-    "websocket": "^1.0.34"
+    "websocket": "^1.0.34",
+    "ws": "^8.17.0"
   },
   "name": "learnjavascript",
   "version": "1.0.0",

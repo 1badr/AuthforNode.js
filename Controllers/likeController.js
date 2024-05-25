@@ -4,38 +4,31 @@ const Like = require('../models/Like');
 
 const likePost = async (req, res) => {
   try {
-    const userId = req.body.userId; 
-    const postId = req.body.postId; 
+    const userId = req.body.userId;
+    const postId = req.body.postId;
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const blog = await Blog.findById(postId).populate('likes');
+    const blog = await Blog.findById(postId);
 
     if (!blog) {
       return res.status(404).json({ error: 'Post not found' });
     }
 
-    const existingLike = blog.likes.find((like) => like.IDUser && like.IDUser.toString() === userId);
+    const existingLike = await Like.findOne({ IDUser: userId, IDblog: postId });
 
     if (existingLike) {
-      blog.likes = blog.likes.filter((like) => like.IDUser && like.IDUser.toString() !== userId);
-      await blog.save();
-
-      existingLike.liked = false;
+      // If the like already exists, toggle the state
+      existingLike.liked = !existingLike.liked;
       await existingLike.save();
-
-      res.json({ message: 'Unliked', liked: false });
+      res.json({ message: existingLike.liked ? 'Liked' : 'Unliked', liked: existingLike.liked });
     } else {
-
+      // If the like doesn't exist, create a new one with the desired state
       const newLike = new Like({ IDUser: userId, IDblog: blog._id, liked: true });
       await newLike.save();
-
-      blog.likes.push(newLike);
-      await blog.save();
-
       res.json({ message: 'Liked', liked: true });
     }
   } catch (error) {
