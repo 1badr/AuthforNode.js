@@ -34,6 +34,7 @@ const favRoutes = require("./routes/favRoutes");
 const SavesRoute = require("./routes/SavesRoute");
 const quizRoute = require("./routes/quizRoute");
 const dashpoardRoutes = require("./routes/Admin/dashpoardRoutes");
+const pusherChatRoute = require("./routes/pusherChatRoute");
 
 
 
@@ -79,6 +80,7 @@ app.use('/fav',favRoutes);
 app.use('/save',SavesRoute);
 app.use('/quiz',quizRoute);
 app.use('/dashpoard',dashpoardRoutes);
+app.use('/pusherChatRoute',pusherChatRoute);
 
 
 
