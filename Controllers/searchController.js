@@ -89,8 +89,10 @@ const filterJobs = async (req, res) => {
     education,
     skills,
     certificate,
-    createdAtYear,
-    createdAtMonth,
+    createdAt
+    // createdAtYear,
+    // createdAtMonth,
+    // createdAtDay
 
   } = req.body;
   const filter = {};
@@ -134,14 +136,18 @@ const filterJobs = async (req, res) => {
   if (certificate) {
     filter.certificate = { $regex: certificate, $options: 'i' };
   }
-  if (createdAtYear) {
-    filter.createdAt = { $gte: new Date(createdAtYear, 0, 1), $lte: new Date(createdAtYear, 11, 31) };
-  }
-  if (createdAtMonth) {
-    filter.createdAt = { $gte: new Date(createdAtYear, createdAtMonth - 1, 1), $lte: new Date(createdAtYear, createdAtMonth, 0) };
-  }
+  // if (createdAtYear) {
+  //   filter.createdAt = { $gte: new Date(createdAtYear, 0, 1), $lte: new Date(createdAtYear, 11, 31) };
+  // }
+  // if (createdAtMonth) {
+  //   filter.createdAt = { $gte: new Date(createdAtYear, createdAtMonth - 1, 1), $lte: new Date(createdAtYear, createdAtMonth, 0) };
+  // }
   
-
+  if (createdAt) {
+    const endDate = createdAt;
+  
+    filter.createdAt = { $lte: endDate };
+  }
   try {
     const jobs = await Jobs.find(filter);
     res.status(200).json(jobs);
