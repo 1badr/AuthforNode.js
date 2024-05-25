@@ -40,7 +40,7 @@ const getUserLikes = async (req, res) => {
   const userId = req.params.id;
 
   try {
-    const userLikes = await Like.find({ IDUser: userId });
+    const userLikes = await Like.find({ IDUser: userId, liked: true });
 
     res.status(200).json(userLikes);
   } catch (error) {
@@ -48,19 +48,17 @@ const getUserLikes = async (req, res) => {
   }
 };
 
-
 const getBlogLikes = async (req, res) => {
   const blogId = req.params.id;
 
   try {
-    const likes = await Like.find({ IDblog: blogId });
+    const likes = await Like.find({ IDblog: blogId, liked: true });
 
     res.status(200).json(likes);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
-
 const checkIfUserLikes = async (req, res) => {
   try {
     const { likerUserID, likedUserID } = req.body;
