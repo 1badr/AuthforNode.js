@@ -3,20 +3,18 @@ const User = require('../models/User'); // استبدل المسار بالمس�
 
 const getTopFollowedCompanies = async (req, res) => {
   try {
-    const companies = await User.find({ type: 'company' })
+    // Get the top 20 most followed users
+    const users = await User.find({ type: 'company' })
       .sort({ followers: -1 })
-      .limit(10);
+      .limit(20)
+      .select({
+        _id: 1,
+        name: 1,
+        image: 1,
+        followers: 1
+      });
 
-    const companyData = companies.map((company) => {
-      return {
-        name: User.name,
-        image: User.image,
-        followers: User.followers,
-        id: User._id
-      };
-    });
-
-    res.json({ companies: companyData });
+    res.status(200).json({ users });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

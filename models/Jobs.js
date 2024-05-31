@@ -61,6 +61,10 @@ const JobsSchema = new mongoose.Schema ({
         type: String,
         enum: ['بكالوريوس', 'ثانوية عامة', 'ماجستير', 'دكتوراه'],
       },
+      saves: {
+        type: String,
+        ref: 'Save',
+      },
     createdAt: { type: Date, default: Date.now },
     experience: {type: Array },
     skills: {type: Array },

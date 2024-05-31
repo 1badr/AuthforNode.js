@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Image Viewer</title>
 </head>
 <body>
-  <h1>test</h1>
-  <button id="ws-open"> open connction</button>
-  <button id="ws-close"> close connction</button>
-  <div>
-    <input type="text">
-    <button> send message</button>
-  </div>
-  <pre id="messages"></pre>
-  <script src="main.js"></script>
+  <h1>Image Viewer</h1>
+  <img id="myImage" alt="My Image">
+
+  <script>
+    // Assuming you have a route defined as '/myView/:name'
+    const imageName = '1716349713720-174957345.png';
+    const imageUrl = `/myView/${imageName}`;
+
+    const imageElement = document.getElementById('myImage');
+    imageElement.src = imageUrl;
+  </script>
 </body>
 </html>

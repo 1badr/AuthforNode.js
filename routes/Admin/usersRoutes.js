@@ -9,6 +9,7 @@ router.get('/getAllCompanyByType', usersControllers.getAllCompanyByType);
 router.get('/getAllEmployeeByType', usersControllers.getAllEmployeeByType);
 router.get('/getAllUsersByType', usersControllers.getAllUsersByType);
 router.put('/updateUser/:id', usersControllers.updateUser);
+router.get('/myView/:name', usersControllers.myView);
 
 
 module.exports = router;

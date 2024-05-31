@@ -20,6 +20,12 @@ const postCV = async (req, res) => {
         phone,
         email,
         userID,
+        languages,
+        education,
+        experience,
+        states,
+        skills,
+        certificate,
       } = req.body;
 
       const files = req.files;
@@ -29,12 +35,13 @@ const postCV = async (req, res) => {
         address,
         phone,
         email,
+        languages,
+        education,
+        experience,
+        skills,
+        certificate,
+        states,
         cv_image: files.find((file) => file.fieldname === 'cv_image')?.filename,
-        languages: files.filter((file) => file.fieldname === 'languages').map((file) => file.filename),
-        education: files.filter((file) => file.fieldname === 'education').map((file) => file.filename),
-        experience: files.filter((file) => file.fieldname === 'experience').map((file) => file.filename),
-        skills: files.filter((file) => file.fieldname === 'skills').map((file) => file.filename),
-        certificate: files.filter((file) => file.fieldname === 'certificate').map((file) => file.filename),
         userID,
       });
 
