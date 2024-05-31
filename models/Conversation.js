@@ -1,12 +1,17 @@
 const mongoose = require("mongoose");
 
-const ConversationSchema = new mongoose.Schema(
-  {
-    members: {
-      type: Array,
-    },
-  },
-  { timestamps: true }
-);
+const ConversationSchema = new mongoose.Schema({
+  participants: [{ type: String, ref: 'User' }],
+  lastMessage: {
+    text: String,
+    createdAt: Date,
+    sender: { type: String, ref: 'User' }
+  }
+}, {
+  timestamps: true
+});
 
-module.exports = mongoose.model("Conversation", ConversationSchema);
+
+const Conversation = mongoose.model('Conversation', ConversationSchema);
+
+module.exports = Conversation;

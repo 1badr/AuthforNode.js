@@ -3,19 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Viewer</title>
+  <title>قائمة المستخدمين</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+  </style>
 </head>
 <body>
-  <h1>Image Viewer</h1>
-  <img id="myImage" alt="My Image">
+  <h1>قائمة المستخدمddddين</h1>
+  <table id="user-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>الاسم</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
   <script>
-    // Assuming you have a route defined as '/myView/:name'
-    const imageName = '1716349713720-174957345.png';
-    const imageUrl = `/myView/${imageName}`;
+    // استرجاع قائمة المستخدمين من الباك
+    fetch('http://localhost:8000/users/allUsers')
+  .then(response => response.json())
+  .then(data => {
+    const userTable = document.getElementById('user-table');
+    const tbody = userTable.getElementsByTagName('tbody')[0];
 
-    const imageElement = document.getElementById('myImage');
-    imageElement.src = imageUrl;
+    // إدراج صفوف في الجدول لكل مستخدم
+    data.users.forEach(user => {
+      const row = document.createElement('tr');
+      const idCell = document.createElement('td');
+      const nameCell = document.createElement('td');
+
+      idCell.textContent = user._id;
+      nameCell.textContent = user.name;
+
+      row.appendChild(idCell);
+      row.appendChild(nameCell);
+      tbody.appendChild(row);
+    });
+  })
+  .catch(error => {
+    console.error('خطأ في استرجاع قائمة المستخدمين:', error);
+  });
   </script>
 </body>
 </html>
