@@ -8,6 +8,11 @@ const BlogsSchema = new mongoose.Schema({
   body: {
     type: String,
   },
+  Categorey : {
+    type : String,
+    enum: ['برمجة', 'تصميم', 'طب' , 'ادارة']   
+
+},
   type: {
     type: String,
     enum: ['user', 'company'],

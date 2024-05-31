@@ -1,21 +1,45 @@
 const Blogs = require('../models/Blogs');
 const Save = require('../models/Save');
 const User = require('../models/User');
-
+const Jobs = require('../models/Jobs');
 
 
 const getUserSaves = async (req, res) => {
-    const userId = req.params.id;
-  
-    try {
-      const userSaves = await Save.find({ IDUser: userId });
-  
-      res.status(200).json(userSaves);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  };
+  const userId = req.params.id;
 
+  try {
+    // Get the user's saved jobs from the Save collection
+    const userSaves = await Save.find({ IDUser: userId }, { IDblog: 1 });
+    const savedJobIds = userSaves.map((save) => save.IDblog);
+
+    // Get the job details from the Jobs collection
+    const jobs = await Jobs.find({ _id: { $in: savedJobIds } });
+    const jobDetails = jobs.map((job) => ({
+      _id: job._id,
+      IDUser: job.IDUser,
+      name: job.name,
+      location: job.location,
+      image: job.image,
+      Categorey: job.Categorey,
+      bio: job.bio,
+      workSchedule: job.workSchedule,
+      type: job.type,
+      salary: job.salary,
+      CVs: job.CVs,
+      states: job.states,
+      education: job.education,
+      experience: job.experience,
+      skills: job.skills,
+      certificate: job.certificate,
+      comment: job.comment,
+      requestsId: job.requestsId
+    }));
+
+    res.status(200).json(jobDetails);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
   const savePost = async (req, res) => {
     try {
       const userId = req.body.userId;
@@ -28,7 +52,7 @@ const getUserSaves = async (req, res) => {
         return res.status(404).json({ error: 'User not found' });
       }
   
-      const blog = await Blogs.findById(postId).populate('saves');
+      const blog = await Jobs.findById(postId).populate('saves');
   
       if (!blog) {
         return res.status(404).json({ error: 'Post not found' });
@@ -59,9 +83,27 @@ const getUserSaves = async (req, res) => {
     const blogId = req.params.id;
   
     try {
-      const saves = await Save.find({ IDblog: blogId });
+      // Get the saves for the specified blog
+      const saves = await Save.find({ IDblog: blogId }, { IDUser: 1 });
+      const userIds = saves.map((save) => save.IDUser);
   
-      res.status(200).json(saves);
+      // Get the user details for the users who saved the blog
+      const users = await User.find({ _id: { $in: userIds } }, {
+        _id: 1,
+        name: 1,
+        email: 1,
+        phone: 1,
+        image: 1,
+        type: 1,
+image: 1,
+location: 1,
+categorey: 1,
+gender: 1,
+states: 1,
+bio: 1,
+      });
+  
+      res.status(200).json(users);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
