@@ -35,7 +35,6 @@ io.on('connection', (socket) => {
         sender,
         recipient,
         text,
-        image
       });
       await newMessage.save();
 
@@ -43,7 +42,6 @@ io.on('connection', (socket) => {
       await Conversation.findByIdAndUpdate(conversationId, {
         $set: {
           'lastMessage.text': text,
-          'lastMessage.image': image,
           'lastMessage.createdAt': newMessage.createdAt,
           'lastMessage.sender': sender
         }
@@ -63,7 +61,6 @@ io.on('connection', (socket) => {
         recipientName: recipientUser.username,
         recipientImageUrl: recipientUser.imageUrl,
         text: newMessage.text,
-        image: newMessage.image,
         createdAt: newMessage.createdAt
       });
     } catch (err) {
@@ -104,19 +101,16 @@ io.on('connection', (socket) => {
 
   // Fetch all messages between two users
   socket.on('fetch messages', async (params) => {
-    const { userId1, userId2 } = params;
-
+    const { conversationId } = params;
+  
     try {
       const messages = await Messages.find({
-        $or: [
-          { sender: userId1, recipient: userId2 },
-          { sender: userId2, recipient: userId1 }
-        ]
+        conversationId: conversationId
       })
       .populate('sender', 'username imageUrl')
       .populate('recipient', 'username imageUrl')
       .sort({ createdAt: 1 });
-
+  
       socket.emit('messages', messages.map(message => ({
         _id: message._id,
         sender: message.sender,
@@ -134,6 +128,7 @@ io.on('connection', (socket) => {
     }
   });
 
+  
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
