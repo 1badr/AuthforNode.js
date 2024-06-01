@@ -84,6 +84,28 @@ const updateUser = (req, res) => {
     });
 };
 
+const fs = require('fs');
+const path = require('path');
+
+function myView(req, res) {
+  const imagePath = path.join(__dirname, 'public', 'images', req.params.name);
+
+  fs.stat(imagePath, (err, stats) => {
+    if (err || !stats.isFile()) {
+      console.error(err);
+      return res.status(404).send('Image not found');
+    }
+
+    res.set({
+      'Content-Type': 'image/png',
+      'Content-Disposition': `inline; filename=${path.basename(imagePath)}`
+    });
+
+    const fileStream = fs.createReadStream(imagePath);
+    fileStream.pipe(res);
+  });
+}
+
 
 module.exports = {
     AllUsers,
@@ -92,6 +114,8 @@ module.exports = {
     updateUser,
     getAllEmployeeByType,
     getAllCompanyByType,
-    getAllUsersByType
+    getAllUsersByType,
+    myView
+    
 }
 
