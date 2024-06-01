@@ -15,7 +15,7 @@ const JobsSchema = new mongoose.Schema ({
     },
     Categorey : {
         type : String,
-        enum: ['برمجة', 'تصميم', 'طب' , 'ادارة']   
+        // enum: ['برمجة', 'تصميم', 'طب' , 'ادارة']   
     },
     bio : {
         type : String,

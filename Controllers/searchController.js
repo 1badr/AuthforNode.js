@@ -146,11 +146,28 @@ const filterJobs = async (req, res) => {
   if (createdAt) {
     const endDate = createdAt;
   
-    filter.createdAt = { $lte: endDate };
+    filter.createdAt = { $gte: endDate };
   }
   try {
     const jobs = await Jobs.find(filter);
-    res.status(200).json(jobs);
+    const jobsWithUserDetails = await Promise.all(jobs.map(async (job) => {
+      const user = await User.findById(job.IDUser);
+      if (user) {
+        const jobWithUserDetails = {
+          ...job._doc,
+          userImage: user.image,
+          companyName: user.name
+        };
+        return jobWithUserDetails;
+      } else {
+        return null;
+      }
+    }));
+
+    const filteredJobs = jobsWithUserDetails.filter(job => job !== null);
+
+    res.json({ jobs: filteredJobs });
+    // res.status(200).json(jobs);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
