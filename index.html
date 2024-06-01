@@ -3,56 +3,110 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>قائمة المستخدمين</title>
+  <title>قائمة المحادثات</title>
   <style>
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .conversation-list {
+      list-style-type: none;
+      padding: 0;
     }
-    th, td {
-      padding: 8px;
-      text-align: left;
+
+    .conversation-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
       border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    .conversation-item:hover {
+      background-color: #f5f5f5;
+    }
+
+    .conversation-item img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .conversation-item .details {
+      flex-grow: 1;
+    }
+
+    .conversation-item .details .name {
+      font-weight: bold;
+    }
+
+    .conversation-item .details .last-message {
+      color: #888;
+      font-size: 14px;
+    }
+
+    .conversation-item .last-message-time {
+      color: #888;
+      font-size: 12px;
     }
   </style>
 </head>
 <body>
-  <h1>قائمة المستخدمddddين</h1>
-  <table id="user-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>الاسم</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <h1>قائمة المحادثات</h1>
+  <ul class="conversation-list"></ul>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
   <script>
-    // استرجاع قائمة المستخدمين من الباك
-    fetch('http://localhost:8000/users/allUsers')
-  .then(response => response.json())
-  .then(data => {
-    const userTable = document.getElementById('user-table');
-    const tbody = userTable.getElementsByTagName('tbody')[0];
+    const socket = io('http://localhost:8000');
+    const userId = 'your_user_id_here'; // استبدل بمعرف المستخدم الخاص بك
 
-    // إدراج صفوف في الجدول لكل مستخدم
-    data.users.forEach(user => {
-      const row = document.createElement('tr');
-      const idCell = document.createElement('td');
-      const nameCell = document.createElement('td');
-
-      idCell.textContent = user._id;
-      nameCell.textContent = user.name;
-
-      row.appendChild(idCell);
-      row.appendChild(nameCell);
-      tbody.appendChild(row);
+    socket.on('connect', () => {
+      socket.emit('fetch conversations', userId);
     });
-  })
-  .catch(error => {
-    console.error('خطأ في استرجاع قائمة المستخدمين:', error);
-  });
+
+    socket.on('conversations', (conversations) => {
+      updateConversationList(conversations);
+    });
+
+    function updateConversationList(conversations) {
+      const conversationList = document.querySelector('.conversation-list');
+      conversationList.innerHTML = '';
+
+      conversations.forEach(conversation => {
+        const conversationItem = document.createElement('li');
+        conversationItem.classList.add('conversation-item');
+        conversationItem.dataset.conversationId = conversation._id;
+
+        const otherParticipant = conversation.participants.find(
+          (participant) => participant._id.toString() !== userId
+        );
+
+        const image = document.createElement('img');
+        image.src = otherParticipant.imageUrl;
+        image.alt = otherParticipant.username;
+
+        const details = document.createElement('div');
+        details.classList.add('details');
+
+        const name = document.createElement('div');
+        name.classList.add('name');
+        name.textContent = otherParticipant.username;
+
+        const lastMessage = document.createElement('div');
+        lastMessage.classList.add('last-message');
+        lastMessage.textContent = conversation.lastMessage.text;
+
+        const lastMessageTime = document.createElement('div');
+        lastMessageTime.classList.add('last-message-time');
+        lastMessageTime.textContent = new Date(conversation.lastMessage.createdAt).toLocaleString();
+
+        details.appendChild(name);
+        details.appendChild(lastMessage);
+
+        conversationItem.appendChild(image);
+        conversationItem.appendChild(details);
+        conversationItem.appendChild(lastMessageTime);
+
+        conversationList.appendChild(conversationItem);
+      });
+    }
   </script>
 </body>
 </html>
