@@ -26,7 +26,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('chat message', async (msg) => {
-    const { conversationId, sender, recipient, text, image } = msg;
+    const { conversationId, sender, recipient, text } = msg;
 
     try {
       // Save the message to the database
@@ -128,7 +128,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  
+
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
