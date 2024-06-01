@@ -211,6 +211,27 @@ app.post('/user', handleMultipartData, function(req, res) {
 });
 
 
+const fs = require('fs');
+
+// API endpoint لاسترداد الصورة
+app.get('/api/image', (req, res) => {
+  const imageName = req.query.name;
+  const imagePath = path.join(__dirname, 'uploads', imageName);
+
+  fs.readFile(imagePath, (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.status(404).json({ error: 'Image not found' });
+    }
+
+    res.set('Content-Type', 'image/jpeg');
+    res.set('Content-Disposition', `inline; filename="${path.basename(imagePath)}"`);
+    res.json({ imageData: data.toString('base64') });
+  });
+});
+
+
+
 
 var server = app.listen(8000,"0.0.0.0", function () {
  var host = server.address().address
