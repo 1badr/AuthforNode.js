@@ -1,24 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Image Display Example</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>قائمة المستخدمين</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+  </style>
 </head>
 <body>
-  <h1>Image Display Example</h1>
-
-  <img id="displayedImage" alt="Displayed Image" />
+  <h1>قائمة المستخدمين</h1>
+  <table id="user-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>الاسم</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
   <script>
-    // استرجاع الصورة من API
-    fetch('http://localhost:8000/api/image?name=1716349713720-174957345.png')
+    // الاتصال بالمقبس
+    const socket = io();
+
+    // استرجاع قائمة المستخدمين من الباك
+    fetch('http://localhost:8000/users/allUsers')
       .then(response => response.json())
       .then(data => {
-        // عرض الصورة على الصفحة
-        const imageElement = document.getElementById('displayedImage');
-        imageElement.src = `data:image/jpeg;base64,${data.imageData}`;
+        const userTable = document.getElementById('user-table');
+        const tbody = userTable.getElementsByTagName('tbody')[0];
+
+        // إدراج صفوف في الجدول لكل مستخدم
+        data.users.forEach(user => {
+          const row = document.createElement('tr');
+          const idCell = document.createElement('td');
+          const nameCell = document.createElement('td');
+
+          idCell.textContent = user._id;
+          nameCell.textContent = user.name;
+
+          row.appendChild(idCell);
+          row.appendChild(nameCell);
+          tbody.appendChild(row);
+        });
       })
       .catch(error => {
-        console.error('Error fetching image:', error);
+        console.error('خطأ في استرجاع قائمة المستخدمين:', error);
       });
   </script>
 </body>

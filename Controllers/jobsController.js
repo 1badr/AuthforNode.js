@@ -42,7 +42,7 @@ const getAllRequestsJobs = async (req, res) => {
   const jobId = req.params.id;
 
   try {
-    const requests = await Requests.find({ userId })
+    const requests = await Requests.find({ jobId })
     res.status(200).json(requests);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -112,21 +112,21 @@ const getJobById = async (req, res) => {
 
 
 
-  const getJobsById = async (req, res) => {
-    const JobId = req.params.id;
-  
-    try {
-      const job = await Jobs.findOne({ IDUser: JobId });
-  
-      if (job) {
-        res.json(job);
-      } else {
-        res.status(404).json({ error: 'Category not found' });
-      }
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch category' });
+const getJobsById = async (req, res) => {
+  const jobId = req.params.id;
+
+  try {
+    const jobs = await Jobs.find({ IDUser: jobId });
+
+    if (jobs.length > 0) {
+      res.json(jobs);
+    } else {
+      res.status(404).json({ error: 'No jobs found for this user' });
     }
-  };
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch jobs' });
+  }
+};
 
 
 
@@ -243,15 +243,7 @@ const getJobById = async (req, res) => {
           const job = await Jobs.findById(request.jobId);
           const company = await User.findById(request.companyId);
     
-          response.push({
-            requestId: request._id,
-            userId: request.userId,
-            userName: request.userName,
-            userImage: request.userImage,
-            UserRequestName: company ? company.name : '',
-            UserRequestImage: company ? company.image : '',
-            jobName: job ? job.name : '',
-          });
+          response.push(job);
         }
     
         res.status(200).json(response);
@@ -260,7 +252,32 @@ const getJobById = async (req, res) => {
       }
     };
 
+
+
+
+    const Followers = require('../models/Followers');
     
+    const getFollowedCompanyJobs = async (req, res) => {
+      const id = req.params.id;
+      try {
+        const followers = await Followers.find({ IDUser: id });
+    
+        const followedCompanyIds = followers.map((follower) => follower.IDFollower);
+    
+        const jobs = await Promise.all(
+          followedCompanyIds.map(async (companyId) => {
+            return await Jobs.find({ IDUser: companyId });
+          })
+        );
+    
+        const allJobs = jobs.flat();
+    
+        res.status(200).json(allJobs);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    };
+     
 module.exports = {
     deleteJobs,
     postJobs,
@@ -273,6 +290,7 @@ module.exports = {
     handleCVRequest,
     getRequestsByJobId,
     getJobsByCompanyId,
-    getRequestsByUserId
+    getRequestsByUserId,
+    getFollowedCompanyJobs
 }
 

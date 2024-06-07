@@ -1,6 +1,7 @@
 const Blogs = require('../models/Blogs');
 const Community = require ('../models/Community');
 const User = require ('../models/User');
+const CV = require ('../models/CV');
 
 const postCommu = async (req, res) => {
   const comm = new Community(req.body);
@@ -100,14 +101,53 @@ const postCommu = async (req, res) => {
 
     const getArticlesUserByType = async (req, res) => {
       try {
-        const articles = await Blogs.find({ type: 'user' });
-        return res.status(200).json({ articles });
+        // Fetch all the blogs with a 'user' type and populate the author field
+        const articles = await Blogs.find({ type: 'user' }).populate('author');
+    
+        // Create an array of blog objects with the desired data
+        const articlesWithUserData = await Promise.all(articles.map(async (article) => {
+          const authorData = article.author;
+          if (authorData) {
+            return {
+              id: article._id,
+              title: article.title,
+              body: article.body,
+              category: article.Categorey,
+              likes: article.likes,
+              comment: article.comment,
+              saves: article.saves,
+              communityID: article.communityID,
+              author: {
+                id: authorData.userID,
+                name: authorData.fullName,
+                image: authorData.cv_image
+              }
+            };
+          } else {
+            return {
+              id: article._id,
+              title: article.title,
+              body: article.body,
+              category: article.Categorey,
+              likes: article.likes,
+              comment: article.comment,
+              saves: article.saves,
+              communityID: article.communityID,
+              author: {
+                id: null,
+                name: 'Unknown',
+                image: null
+              }
+            };
+          }
+        }));
+    
+        return res.status(200).json(articlesWithUserData);
       } catch (error) {
         console.log(error.message);
         return res.status(500).json({ message: 'Failed to get articles by type' });
       }
     };
-
     const getArticlesCompanyByType = async (req, res) => {
       try {
         const articles = await Blogs.find({ type: 'company' });

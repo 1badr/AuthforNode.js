@@ -10,36 +10,40 @@ const getUserSaves = async (req, res) => {
   try {
     // Get the user's saved jobs from the Save collection
     const userSaves = await Save.find({ IDUser: userId, state: true }, { IDblog: 1, state: 1 });
-    const savedJobsWithState = userSaves.map((save) => ({
-      IDblog: save.IDblog,
-      state: save.state,
-    }));
+    const savedJobIds = userSaves.map((save) => save.IDblog);
 
     // Get the job details from the Jobs collection
-    const savedJobIds = userSaves.map((save) => save.IDblog);
     const jobs = await Jobs.find({ _id: { $in: savedJobIds } });
-    const jobDetails = jobs.map((job) => ({
-      _id: job._id,
-      IDUser: job.IDUser,
-      name: job.name,
-      location: job.location,
-      image: job.image,
-      Categorey: job.Categorey,
-      bio: job.bio,
-      workSchedule: job.workSchedule,
-      type: job.type,
-      salary: job.salary,
-      CVs: job.CVs,
-      states: job.states,
-      education: job.education,
-      experience: job.experience,
-      skills: job.skills,
-      certificate: job.certificate,
-      comment: job.comment,
-      requestsId: job.requestsId,
-    }));
 
-    res.status(200).json({ jobDetails, savedJobsWithState });
+    // Combine the saved job information with the job details
+    const jobDetails = await Promise.all(
+      jobs.map(async (job) => {
+        const savedJob = userSaves.find((save) => save.IDblog === job._id.toString());
+        return {
+          jobID: job._id,
+          IDUser: userId,
+          jobName: job.name,
+          jobLocation: job.location,
+          jobImage: job.image,
+          jobCategorey: job.Categorey,
+          jobBio: job.bio,
+          jobWorkSchedule: job.workSchedule,
+          jobType: job.type,
+          jobSalary: job.salary,
+          jobCVs: job.CVs,
+          jobstates: job.states,
+          jobeducation: job.education,
+          jobexperience: job.experience,
+          jobskills: job.skills,
+          jobcertificate: job.certificate,
+          jobcomment: job.comment,
+          jobrequestsId: job.requestsId,
+          jobState: savedJob.state,
+        };
+      })
+    );
+
+    res.status(200).json({ jobDetails });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -7,19 +7,16 @@ const { v4: uuidv4 } = require('uuid');
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: [true, 'Email is required'],
     unique: true,
     lowercase: true,
     validate: [isEmail, 'Please provide a valid email'],
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
     minLength: [6, 'Minimum password length is 6 characters'],
   },
   name: {
     type: String,
-    required: [true, 'Name is required'],
     minlength: [1, 'Minimum name length is 1 character'],
     maxlength: [30, 'Maximum name length is 30 characters'],
   },
@@ -31,13 +28,8 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   location: {
-    type: {
       type: String,
-    },
-    coordinates: {
-      type: [Number],
-      index: '2dsphere',
-    },
+    
   },
   categorey: {
     type: String,
@@ -70,6 +62,9 @@ const userSchema = new mongoose.Schema({
     'ذمار'],
   },
   bio: {
+    type: String,
+  },
+  phone: {
     type: String,
   },
   employeeCount: {

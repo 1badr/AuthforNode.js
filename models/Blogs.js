@@ -23,7 +23,7 @@ const BlogsSchema = new mongoose.Schema({
   },
   author: {
     type: String,
-    ref: 'User',
+    ref: 'CV',
   },
   comment: {
     type: String,

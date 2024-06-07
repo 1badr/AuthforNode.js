@@ -14,6 +14,7 @@ router.post('/handleCVRequest', jobsController.handleCVRequest);
 router.get('/getJobsByCompanyId/:id', jobsController.getJobsByCompanyId);
 router.get('/getRequestsByJobId/:id', jobsController.getRequestsByJobId);
 router.get('/getRequestsByUserId/:id', jobsController.getRequestsByUserId);
+router.get('/getFollowedCompanyJobs/:id', jobsController.getFollowedCompanyJobs);
 
 module.exports = router;
 

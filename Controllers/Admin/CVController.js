@@ -114,21 +114,28 @@ const getCVById = async (req, res) => {
   }
 };
 
-const updateCV = (req, res) => {
+const updateCV = async (req, res) => {
   const id = req.params.id;
   const cvData = req.body;
 
-  CV.findByIdAndUpdate(id, cvData)
-    .then(() => {
-      res.json({ success: true });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ error: 'erorr' });
-    });
+  try {
+    let cv = await CV.findById(id);
+    if (!cv) {
+      return res.status(404).json({ error: 'CV not found' });
+    }
+
+    // Update the CV data
+    Object.assign(cv, cvData);
+
+    // Save the updated CV
+    await cv.save();
+
+    res.json({ success: true, cv });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: 'Error updating CV' });
+  }
 };
-
-
 
 const getCVUserById = async (req, res) => {
   try {

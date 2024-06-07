@@ -1,5 +1,6 @@
 const { restart } = require('nodemon');
 const Comment = require ('../models/Comments');
+const CV = require ('../models/CV');
 const User = require ('../models/User');
 const { result } = require('lodash');
 
@@ -43,15 +44,15 @@ const getArticleComments = async (req, res) => {
 
 
 const getUserComments = async (req, res) => {
-  const userId = req.params.id;
+  const userID = req.params.id;
 
   try {
-    const user = await User.findById(userId);
+    const user = await CV.findById(userID);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const comments = await Comment.find({ commenterID: userId });
+    const comments = await Comment.find({ commenterID: userID });
 
     const userData = {
       name: user.name,

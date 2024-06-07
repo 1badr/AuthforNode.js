@@ -104,7 +104,7 @@ const getFollowers = async (req, res) => {
   const IDUser = req.params.id;
 
   try {
-    const followers = await Followers.find({ IDUser:IDUser }).populate('IDFollower');
+    const followers = await Followers.find({ IDUser:IDUser ,following:true}).populate('IDFollower');
 
     res.status(200).json(followers);
   } catch (error) {
