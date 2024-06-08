@@ -9,10 +9,14 @@ const getUserSaves = async (req, res) => {
 
   try {
     // Get the user's saved jobs from the Save collection
-    const userSaves = await Save.find({ IDUser: userId }, { IDblog: 1 });
-    const savedJobIds = userSaves.map((save) => save.IDblog);
+    const userSaves = await Save.find({ IDUser: userId, state: true }, { IDblog: 1, state: 1 });
+    const savedJobsWithState = userSaves.map((save) => ({
+      IDblog: save.IDblog,
+      state: save.state,
+    }));
 
     // Get the job details from the Jobs collection
+    const savedJobIds = userSaves.map((save) => save.IDblog);
     const jobs = await Jobs.find({ _id: { $in: savedJobIds } });
     const jobDetails = jobs.map((job) => ({
       _id: job._id,
@@ -32,14 +36,16 @@ const getUserSaves = async (req, res) => {
       skills: job.skills,
       certificate: job.certificate,
       comment: job.comment,
-      requestsId: job.requestsId
+      requestsId: job.requestsId,
     }));
 
-    res.status(200).json(jobDetails);
+    res.status(200).json({ jobDetails, savedJobsWithState });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+
   const savePost = async (req, res) => {
     try {
       const userId = req.body.userId;
@@ -84,8 +90,9 @@ const getUserSaves = async (req, res) => {
   
     try {
       // Get the saves for the specified blog
-      const saves = await Save.find({ IDblog: blogId }, { IDUser: 1 });
-      const userIds = saves.map((save) => save.IDUser);
+      const saves = await Save.find({ IDblog: blogId, state: true }, { IDUser: 1, IDblog: 1, state: 1 });
+      const userIds = saves.map((save) => save.IDUser.toString());
+      const blogIds = saves.map((save) => save.IDblog.toString());
   
       // Get the user details for the users who saved the blog
       const users = await User.find({ _id: { $in: userIds } }, {
@@ -95,15 +102,52 @@ const getUserSaves = async (req, res) => {
         phone: 1,
         image: 1,
         type: 1,
-image: 1,
-location: 1,
-categorey: 1,
-gender: 1,
-states: 1,
-bio: 1,
+        image: 1,
+        location: 1,
+        categorey: 1,
+        gender: 1,
+        states: 1,
+        bio: 1,
       });
   
-      res.status(200).json(users);
+      // Get the job details for the saved blogs
+      const jobs = await Jobs.find({ _id: { $in: blogIds } }, {
+        _id: 1,
+        name: 1,
+        location: 1,
+        image: 1,
+        Categorey: 1,
+        bio: 1,
+        workSchedule: 1,
+        type: 1,
+        salary: 1,
+        CVs: 1,
+        states: 1,
+        education: 1,
+        experience: 1,
+        skills: 1,
+        certificate: 1,
+        comment: 1,
+        requestsId: 1,
+      });
+  
+      const userDetailsWithJobInfo = users.map((user) => ({
+        _id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        image: user.image,
+        type: user.type,
+        location: user.location,
+        categorey: user.categorey,
+        gender: user.gender,
+        states: user.states,
+        bio: user.bio,
+        state: saves.find((save) => save.IDUser.toString() === user._id.toString())?.state || false,
+        jobs: jobs.filter((job) => blogIds.includes(job._id.toString())),
+      }));
+  
+      res.status(200).json(userDetailsWithJobInfo);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
