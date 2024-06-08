@@ -90,10 +90,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     ref: 'Comments',
   },
-  followers: {
-    type: String,
-    ref: 'Followers',
-  },
+  followersCount: { 
+    type: Number,
+    default: 0,
+   },
   blog: {
     type: String,
     ref: 'Blogs',

@@ -99,9 +99,29 @@ const postCommu = async (req, res) => {
     };
 
     const getArticlesUserByType = async (req, res) => {
+      const { userType, blogCategorey } = req.body;
+
       try {
-        const articles = await Blogs.find({ type: 'user' });
-        return res.status(200).json({ articles });
+        const articles = await Blogs.find({ type: userType,Categorey:blogCategorey });
+        const articlesWithUserDetails = await Promise.all(articles.map(async (article) => {
+          const user = await User.findById(article.author);
+          if (user) {
+            const articleWithUserDetails = {
+              ...article._doc,
+              userImage: user.image,
+              userName: user.name
+            };
+            return articleWithUserDetails;
+          } else {
+            return null;
+          }
+        }));
+    
+        const filteredArticles = articlesWithUserDetails.filter(article => article !== null);
+    
+        res.json({ articles: filteredArticles });
+        // const user = await User.findById(articles.author);
+        // return res.status(200).json({ articles,user });
       } catch (error) {
         console.log(error.message);
         return res.status(500).json({ message: 'Failed to get articles by type' });

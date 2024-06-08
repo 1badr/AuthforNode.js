@@ -6,7 +6,9 @@ const ConversationSchema = new mongoose.Schema({
     text: String,
     createdAt: Date,
     sender: { type: String, ref: 'User' }
-  }
+  },
+  senderNeme: String,
+  senderImage: String,
 }, {
   timestamps: true
 });

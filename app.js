@@ -13,6 +13,9 @@ app.use(passport.initialize());
 const { client } = require('websocket');
 //const  { WebSocketServer, WebSocket } = require('ws');
 
+const serverr = require('./server');  // استيراد الخادم من server.js
+
+// app.use(express.static('public'));
 
 const authRoutes = require ('./routes/authRoutes');
 const CategoreyRoutes = require('./routes/categoreyRoutes');

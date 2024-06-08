@@ -5,7 +5,7 @@ const MessageSchema = new mongoose.Schema({
   sender: { type: String, ref: 'User' },
   recipient: { type: String, ref: 'User' },
   text: String,
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now() }
 });
 
 const Message = mongoose.model('Message', MessageSchema);

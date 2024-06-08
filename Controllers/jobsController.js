@@ -145,9 +145,14 @@ const getJobById = async (req, res) => {
           throw new Error('Invalid job');
         }
         const checkRequest =await Requests.findOne({userId:userId,jobId:jobId});
+        const cv = await CV.findOne({ userID: userId });
         if (checkRequest) {
           res.status(200).json({requestMessege:"انت مقدم على هذه الوظيفة"});
-        } else {
+        }
+       else if (!cv) {
+          return res.status(200).json({ requestMessege: 'يجب انشاء CV للتقديم على الوظيفة' });
+        }
+        else {
           const request = new Requests({
             userId: userId,
             jobId: jobId,

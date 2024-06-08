@@ -23,6 +23,7 @@ const followUser = async (req, res) => {
 
     // const isFollowing = user.following && user.following.includes(targetUserId);
     const user = await Followers.findOne({ IDUser: userId,IDFollower: targetUserId  });
+    const company = await User.findById(targetUserId);
     // const targetUser = await Followers.findOne({ IDFollower: targetUserId });
 
     if (user) {
@@ -31,8 +32,10 @@ const followUser = async (req, res) => {
 
       // await user.save();
       user.following = true;
+      company.followersCount++;
 
       await user.save();
+      await company.save();
 
       res.json({ message: 'followed ', following:true });
       // res.json({ message: 'Unfollowed' });
@@ -48,8 +51,10 @@ const followUser = async (req, res) => {
         IDFollower: targetUserId,
         following: true  
       });
+      company.followersCount++;
 
       await followersEntry.save();
+      await company.save();
 
       res.json({ message: 'Followed', following:true });
     }
@@ -82,12 +87,14 @@ const unFollowUser = async (req, res) => {
       IDUser: userId,
       IDFollower: targetUserId
     }).exec();
+    const company = await User.findById(targetUserId);
 
     if (follower) {
 
       follower.following = false;
-
+      company.followersCount--;
       await follower.save();
+      await company.save();
 
       res.json({ message: 'Unfollowed', following:false });
     } else {

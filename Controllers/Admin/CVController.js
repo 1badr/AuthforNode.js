@@ -28,7 +28,9 @@ const postCV = async (req, res) => {
         certificate,
       } = req.body;
 
-      const files = req.files;
+      const files = req.files || [];  // تعيين قائمة فارغة إذا لم تكن هناك ملفات مرفقة
+
+      const cvImage = files.find((file) => file.fieldname === 'cv_image')?.filename;
 
       const newCV = new CV({
         fullName,
@@ -41,7 +43,7 @@ const postCV = async (req, res) => {
         skills,
         certificate,
         states,
-        cv_image: files.find((file) => file.fieldname === 'cv_image')?.filename,
+        cv_image: cvImage,  // تعيين اسم ملف الصورة إذا وجد
         userID,
       });
 
@@ -53,6 +55,7 @@ const postCV = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
   
 const deleteCV = async (req,res) => {
   const id = req.params.id ;

@@ -20,16 +20,26 @@ const deleteCategorey = (req,res) => {
 const postCategorey = async (req, res) => {
   const categoryData = req.body;
 
-  if (['Program', 'Desgin', 'Medical', 'Mangment'].includes(categoryData.name)) {
-    const category = new Categorey(categoryData);
-    category.save()
-      .then((result) => {
-        res.status(201).json({ category: category._id });
-      });
-  } else {
-    res.status(400).json({ error: 'Invalid category name' });
+  try {
+    // انتظر حتى يتم الانتهاء من البحث عن الفئة
+    const isExists = await Categorey.find({ name: categoryData.name });
+
+    if (isExists.length > 0) {
+      res.status(400).json({ error: 'Category already exists' });
+    } else {
+      // إنشاء الفئة وحفظها
+      const category = new Categorey(categoryData);
+      await category.save();
+
+      // إرجاع البيانات مع رمز الحالة 201
+      res.status(201).json(category);
+    }
+  } catch (error) {
+    // في حالة حدوث أي خطأ، أرجعها كاستجابة 400 مع الخطأ
+    res.status(400).json({ error: error.message });
   }
 };
+
 
 
   const ubdateblog = (req, res) => {

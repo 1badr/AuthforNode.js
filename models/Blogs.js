@@ -9,14 +9,14 @@ const BlogsSchema = new mongoose.Schema({
     type: String,
   },
   Categorey : {
-    type : String,
-    enum: ['برمجة', 'تصميم', 'طب' , 'ادارة']   
+    type : String, 
 
 },
   type: {
     type: String,
     enum: ['user', 'company'],
   },
+  createdAt: { type: Date, default: Date.now },
   likes: {
     type: String,
     ref: 'Like',

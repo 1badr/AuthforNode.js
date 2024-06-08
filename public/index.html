@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Realtime Chat</title>
+  <style>
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 8px;
+      margin-bottom: 10px;
+      background: #f4f4f4;
+    }
+
+    input {
+      padding: 10px;
+      width: 80%;
+      margin-right: .5%;
+    }
+
+    button {
+      padding: 10px;
+      width: 18%;
+    }
+  </style>
+</head>
+
+<body>
+  <ul id="messages"></ul>
+  <form id="form" action="">
+    <input id="input" autocomplete="off" /><button>Send</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+    var form = document.getElementById('form');
+    var input = document.getElementById('input');
+    var conversationId = "666327b9b61f033c28d40175";  // conversationId المراد الانضمام إليها
+
+    // انضمام تلقائي إلى المحادثة عند الاتصال بالخادم
+    socket.on('connect', function () {
+      socket.emit('join conversation', {
+      "conversationId": conversationId,
+      "sender": "6622fbdf03e8a61fb6355d77",
+      "recipient": "663a416fb9aeb6c2a407eb62",
+    });
+      // console.log(`Joined conversation ${conversationId}`);
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (input.value) {
+        socket.emit('chat message', { "conversationId": conversationId, "sender": "6622f88892539510d5395b57", "recipient": "6622fbdf03e8a61fb6355d77", "text": input.value });
+        input.value = '';
+      }
+    });
+
+    socket.on('chat message', function (msg) {
+      var item = document.createElement('li');
+      item.textContent = msg["text"];
+      document.getElementById('messages').appendChild(item);
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+  </script>
+</body>
+
+</html>
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Test</title>
+</head>
+<body>
+  <h1>WebSocket Chat</h1>
+  <div id="messages"></div>
+  <input id="messageInput" type="text" placeholder="Enter your message">
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    const socket = new WebSocket('ws://localhost:3000');
+
+    socket.onopen = function(event) {
+      console.log('WebSocket is connected.');
+      socket.send(JSON.stringify({
+        conversationId: 'conversationId1',
+        sender: 'senderId1',
+        recipient: 'recipientId1',
+        text: 'Hello!'
+      }));
+    };
+
+    socket.onmessage = function(event) {
+      const message = JSON.parse(event.data);
+      const messageDiv = document.createElement('div');
+      messageDiv.textContent = `${message.senderName}: ${message.text}`;
+      document.getElementById('messages').appendChild(messageDiv);
+    };
+
+    socket.onclose = function(event) {
+      console.log('WebSocket is closed.');
+    };
+
+    socket.onerror = function(error) {
+      console.error('WebSocket error:', error);
+    };
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value;
+      socket.send(JSON.stringify({
+        conversationId: 'conversationId1',
+        sender: 'senderId1',
+        recipient: 'recipientId1',
+        text: message
+      }));
+      input.value = '';
+    }
+  </script>
+</body>
+</html> -->
