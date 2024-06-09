@@ -1,5 +1,6 @@
 const { restart } = require('nodemon');
 const User = require ('../models/User');
+const userSchema = require ('../models/User');
 const {isEmail} = require ('validator'); 
 const jwt =require('jsonwebtoken');
 
@@ -133,6 +134,62 @@ module.exports.signup_post = async (req, res) => {
   });
 };
 
+// module.exports.signupCompany = async (req, res) => {
+//   // تحميل الصورة باستخدام multer
+//   upload(req, res, async (err) => {
+//     if (err) {
+//       // حدث خطأ أثناء تحميل الصورة
+//       console.error(err);
+//       return res.status(500).json({ error: "حدث خطأ أثناء تحميل الصورة" });
+//     }
+
+//     try {
+//       const {
+//         email,
+//         password,
+//         name,
+//         type,
+//         bio,
+//         phone,
+//         createAt,
+//         employeeCount
+//       } = req.body;
+
+//       let image = ""; // اسم الملف الذي سيتم حفظه في قاعدة البيانات
+
+//       if (req.file) {
+//         // تم تحميل صورة
+//         image = req.file.filename; // اسم الملف الذي تم تخزينه في المجلد
+//       }
+
+//       // إنشاء المستخدم الجديد بما في ذلك الصورة
+//       const user = await User.create({
+//         email,
+//         password,
+//         name,
+//         type,
+//         bio,
+//         image,
+//         phone,
+//         createAt,
+//         employeeCount
+//       });
+
+//       // قم بتحديث الموقع والفئة بعد إنشاء المستخدم
+//       user.location = req.body.location;
+//       user.categorey = req.body.categorey;
+//       await user.save();
+
+//       const token = createToken(user._id);
+//       res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+//       res.status(201).json({ type: user.type, id: user._id, location: user.location, category: user.category });
+//     } catch (err) {
+//       let error = handleErrors(err);
+//       res.status(400).json({ error });
+//     }
+//   });
+// };
+
 module.exports.signupCompany = async (req, res) => {
   // تحميل الصورة باستخدام multer
   upload(req, res, async (err) => {
@@ -148,10 +205,13 @@ module.exports.signupCompany = async (req, res) => {
         password,
         name,
         type,
+        location,
+        category,
+        gender,
         bio,
-        phone,
-        createAt,
-        employeeCount
+        employeeCount,
+        companyCreateAt,
+        states,
       } = req.body;
 
       let image = ""; // اسم الملف الذي سيتم حفظه في قاعدة البيانات
@@ -167,21 +227,18 @@ module.exports.signupCompany = async (req, res) => {
         password,
         name,
         type,
+        location,
+        category,
+        gender,
         bio,
-        image,
-        phone,
-        createAt,
-        employeeCount
+        employeeCount,
+        companyCreateAt,
+        states,
       });
-
-      // قم بتحديث الموقع والفئة بعد إنشاء المستخدم
-      user.location = req.body.location;
-      user.categorey = req.body.categorey;
-      await user.save();
 
       const token = createToken(user._id);
       res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-      res.status(201).json({ type: user.type, id: user._id, location: user.location, category: user.category });
+      res.status(201).json({ type: user.type, id: user._id });
     } catch (err) {
       let error = handleErrors(err);
       res.status(400).json({ error });
@@ -189,26 +246,37 @@ module.exports.signupCompany = async (req, res) => {
   });
 };
 
+module.exports.login_post = async (req, res) => {
+  const { email, password } = req.body;
+  
+  try {
+    const user = await User.login(email, password);
+    const userType = user.type;
+    const userId = user._id;
+    const token = createToken(user._id);
+    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+    res.status(200).json({ type: user.type, id: user._id, name: user.name });
+  } catch (err) {
+    const error = handleErrors(err);
+    res.status(400).json({ error });
+  }
+};
 
-
-
-
-
-module.exports.login_post = async (req,res) => {
-    const { email , password, name} = req.body
+// module.exports.login_post = async (req,res) => {
+//     const { email , password, name} = req.body
     
-    try{
-        const user = await User.login(email,password,name);
-        const userType = user.type;
-        const userId = user._id;
-        const token = createToken(user._id);
-        res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000});
-        res.status(200).json({ type: user.type, id: user._id , name: user.name});    }
-    catch (err) {
-        const error = handleErrors(err);
-        res.status(400).json({error});
-    }
-}
+//     try{
+//         const user = await User.login(email,password,name);
+//         const userType = user.type;
+//         const userId = user._id;
+//         const token = createToken(user._id);
+//         res.cookie('jwt',token,{httpOnly:true,maxAge:maxAge*1000});
+//         res.status(200).json({ type: user.type, id: user._id , name: user.name});    }
+//     catch (err) {
+//         const error = handleErrors(err);
+//         res.status(400).json({error});
+//     }
+// }
 
 module.exports.logout_get = (req,res)=>{
     res.cookie('jwt','',{maxAge:1});

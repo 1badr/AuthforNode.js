@@ -259,7 +259,7 @@ const getJobsById = async (req, res) => {
     const getFollowedCompanyJobs = async (req, res) => {
       const id = req.params.id;
       try {
-        const followers = await Followers.find({ IDUser: id });
+        const followers = await Followers.find({ IDUser: id ,following: true });
         const followedCompanyIds = followers.map((follower) => follower.IDFollower);
     
         // Fetch the jobs for each followed company
