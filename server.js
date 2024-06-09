@@ -99,7 +99,7 @@ try {
         participants: [sender, recipient],
         lastMessage: {
           text: text,
-          createdAt: Date.now,
+          createdAt: Date.now(),
           sender: sender
         },
         senderNeme:senderUser.name,

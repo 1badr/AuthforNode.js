@@ -229,7 +229,7 @@ app.get('/api/image', (req, res) => {
 
     res.set('Content-Type', 'image/jpeg');
     res.set('Content-Disposition', `inline; filename="${path.basename(imagePath)}"`);
-    res.json({ imageData: data.toString('base64') });
+    res.send(data);
   });
 });
 
