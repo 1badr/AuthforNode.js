@@ -1,5 +1,6 @@
 const Blogs = require('../models/Blogs');
 const Community = require ('../models/Community');
+const Like = require('../models/Like');
 const User = require ('../models/User');
 
 const postCommu = async (req, res) => {
@@ -99,17 +100,25 @@ const postCommu = async (req, res) => {
     };
 
     const getArticlesUserByType = async (req, res) => {
-      const { userType, blogCategorey } = req.body;
+      const { userType, blogCategorey,userlike } = req.body;
 
       try {
         const articles = await Blogs.find({ type: userType,Categorey:blogCategorey });
         const articlesWithUserDetails = await Promise.all(articles.map(async (article) => {
           const user = await User.findById(article.author);
+          const existingLike = await Like.findOne({ IDUser: userlike, IDblog: article._id });
+          let isliked;
+    if (existingLike) {
+      isliked = existingLike.liked;
+      } else {
+        isliked = false;
+      }
           if (user) {
             const articleWithUserDetails = {
               ...article._doc,
               userImage: user.image,
-              userName: user.name
+              userName: user.name,
+              isliked: isliked
             };
             return articleWithUserDetails;
           } else {

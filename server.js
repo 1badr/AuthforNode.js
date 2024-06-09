@@ -99,7 +99,7 @@ try {
         participants: [sender, recipient],
         lastMessage: {
           text: text,
-          createdAt: Date.now(),
+          createdAt: Date.now,
           sender: sender
         },
         senderNeme:senderUser.name,
@@ -235,7 +235,7 @@ function formatConversation(conversation, userId) {
           // إذا لم توجد محادثة، أنشئ واحدة جديدة
           conversation = new Conversation({
             participants: [senderId, recipientId],
-            createdAt: Date.now()
+            createdAt: Date.now
           });
           await conversation.save();
         }

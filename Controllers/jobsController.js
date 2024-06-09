@@ -244,24 +244,20 @@ const getJobById = async (req, res) => {
     };
 
     const getRequestsByUserId = async (req, res) => {
-      const userId = req.params.userId;
+      const userId = req.params.id;
     
       try {
-        const requests = await Requests.find({ userId });
+        const requests = await Requests.find({userId: userId });
         const response = [];
     
         for (const request of requests) {
           const job = await Jobs.findById(request.jobId);
-          const company = await User.findById(request.companyId);
+          const company = await User.findById(job.IDUser);
     
-          response.push({
-            requestId: request._id,
-            userId: request.userId,
-            userName: request.userName,
-            userImage: request.userImage,
-            UserRequestName: company ? company.name : '',
-            UserRequestImage: company ? company.image : '',
-            jobName: job ? job.name : '',
+          response.push( {
+            ...job._doc,
+            userImage: company.image,
+            companyName: company.name
           });
         }
     

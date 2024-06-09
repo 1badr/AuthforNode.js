@@ -1,5 +1,7 @@
 
+const { number } = require('mathjs');
 const mongoose = require('mongoose');
+const { INTEGER } = require('sequelize');
 
 const BlogsSchema = new mongoose.Schema({
   title: {
@@ -18,8 +20,9 @@ const BlogsSchema = new mongoose.Schema({
   },
   createdAt: { type: Date, default: Date.now },
   likes: {
-    type: String,
-    ref: 'Like',
+    type: number,
+    // ref: 'Like',
+    default:0
   },
   author: {
     type: String,
