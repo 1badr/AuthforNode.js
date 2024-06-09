@@ -48,6 +48,7 @@ module.exports.signup_get = (req,res) => {
 module.exports.login_get = (req,res) => {
     res.render('login');
 }
+
 const multer = require("multer");
 const path = require("path");
 
@@ -205,7 +206,7 @@ module.exports.login_post = async (req,res) => {
         res.status(200).json({ type: user.type, id: user._id , name: user.name});    }
     catch (err) {
         const error = handleErrors(err);
-        res.status(400).json({});
+        res.status(400).json({error});
     }
 }
 

@@ -1,9 +1,8 @@
 const { restart } = require('nodemon');
-const CV = require ('../../models/CV');
-const User = require ('../../models/User');
+const CV = require('../../models/CV');
+const User = require('../../models/User');
 const multer = require('multer');
 const path = require('path');
-
 
 const upload = require('../../config/multerConfig');
 
@@ -53,34 +52,28 @@ const postCV = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
-  
-const deleteCV = async (req,res) => {
-  const id = req.params.id ;
+
+const deleteCV = async (req, res) => {
+  const id = req.params.id;
 
   CV.findByIdAndDelete(id)
-  .then(result => {
-    res.status(201).json();
-  })
-  .catch(err => {
-    console.log(err);
-  })
+    .then((result) => {
+      res.status(201).json();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
-
-
-
-const allCvs = async (req,res) => {
+const allCvs = async (req, res) => {
   try {
-  CVCount =await CV.count()
-  CVs = await CV.find()
-  return res.status(200).json({CVCount,CVs});
-}
-catch (e){
-  console.log(e.message)
-}
+    CVCount = await CV.count();
+    CVs = await CV.find();
+    return res.status(200).json({ CVCount, CVs });
+  } catch (e) {
+    console.log(e.message);
+  }
 };
-
-
 
 const getUserCvs = async (req, res) => {
   const userId = req.params.id;
@@ -96,8 +89,6 @@ const getUserCvs = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-////
-/////
 
 const getCVById = async (req, res) => {
   try {
@@ -108,33 +99,67 @@ const getCVById = async (req, res) => {
       return res.status(404).json({ error: 'السيرة الذاتية غير موجودة' });
     }
 
-    res.json({cv});
+    res.json({ cv });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads"), // المجلد الذي سيتم تخزين الصور فيه
+  filename: (req, file, cb) => {
+    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(
+      file.originalname
+    )}`;
+    cb(null, uniqueName);
+  },
+});
+const uploade = multer({
+  storage,
+  limits: { fileSize: 1000000 * 5 }, // حد حجم الملف المسموح به (5 ميجابايت)
+}).single("cv_image"); // اسم حقل الصورة في النموذج
 
 const updateCV = async (req, res) => {
-  const id = req.params.id;
-  const cvData = req.body;
-
-  try {
-    let cv = await CV.findById(id);
-    if (!cv) {
-      return res.status(404).json({ error: 'CV not found' });
+  // تحميل الصورة باستخدام multer
+  uploade(req, res, async (err) => {
+    if (err) {
+      // حدث خطأ أثناء تحميل الصورة
+      console.error(err);
+      return res.status(500).json({ error: "حدث خطأ أثناء تحميل الصورة" });
     }
 
-    // Update the CV data
-    Object.assign(cv, cvData);
+    try {
+      const { fullName, address, phone, email, languages, education, experience, skills, certificate, states, userID } = req.body;
+      const cvId = req.params.id; // معرف السيفي المراد تحديثه
 
-    // Save the updated CV
-    await cv.save();
+      let updatedCV = {
+        fullName,
+        address,
+        phone,
+        email,
+        languages,
+        education,
+        experience,
+        skills,
+        certificate,
+        states,
+        userID
+      };
 
-    res.json({ success: true, cv });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: 'Error updating CV' });
-  }
+      if (req.file) {
+        // تم تحميل صورة جديدة
+        updatedCV.cv_image = req.file.filename; // اسم الملف الذي تم تخزينه في المجلد
+      }
+
+      // تحديث بيانات السيفي
+      const cv = await CV.findByIdAndUpdate(cvId, updatedCV, { new: true });
+
+      // إرجاع البيانات المحدثة للسيفي
+      res.status(200).json(cv);
+    } catch (err) {
+      console.error('Error updating CV:', err);
+      res.status(400).json({ error: 'Error updating CV' });
+    }
+  });
 };
 
 const getCVUserById = async (req, res) => {
@@ -153,12 +178,11 @@ const getCVUserById = async (req, res) => {
 };
 
 module.exports = {
-    postCV,
-    deleteCV,
-    allCvs,
-    updateCV,
-    getUserCvs,
-    getCVById,
-    getCVUserById
-}
-
+  postCV,
+  deleteCV,
+  allCvs,
+  updateCV,
+  getUserCvs,
+  getCVById,
+  getCVUserById,
+};

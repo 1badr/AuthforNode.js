@@ -47,7 +47,7 @@ const getUserComments = async (req, res) => {
   const userID = req.params.id;
 
   try {
-    const user = await CV.findById(userID);
+    const user = await User.findById(userID);
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }

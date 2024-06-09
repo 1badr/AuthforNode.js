@@ -5,6 +5,7 @@ const { async } = require('seed/lib/seed');
 const Requests = require('../models/Requests');
 const User = require('../models/User');
 const CV = require('../models/CV');
+const Followers = require('../models/Followers');
 
 const postJobs = async (req, res) => {
     const job = new Jobs (req.body);
@@ -255,22 +256,23 @@ const getJobsById = async (req, res) => {
 
 
 
-    const Followers = require('../models/Followers');
-    
     const getFollowedCompanyJobs = async (req, res) => {
       const id = req.params.id;
       try {
         const followers = await Followers.find({ IDUser: id });
-    
         const followedCompanyIds = followers.map((follower) => follower.IDFollower);
     
-        const jobs = await Promise.all(
+        // Fetch the jobs for each followed company
+        const jobsWithCompanyDetails = await Promise.all(
           followedCompanyIds.map(async (companyId) => {
-            return await Jobs.find({ IDUser: companyId });
+            const company = await User.findById(companyId, 'name image');
+            const jobs = await Jobs.find({ IDUser: companyId });
+            return jobs.map((job) => ({ ...job.toObject(), companyName: company.name, companyImage: company.image }));
           })
         );
     
-        const allJobs = jobs.flat();
+        // Flatten the array of jobs
+        const allJobs = jobsWithCompanyDetails.flat();
     
         res.status(200).json(allJobs);
       } catch (error) {
