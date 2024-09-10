@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const NotificationsSchema = new Schema({
 	user: {
 		type: String,
-		ref: 'User' // استبدل 'User' بنموذج المستخدم الصحيح
+		ref: 'User' 
 	},
 	company: {
 		type: String,

@@ -1,6 +1,5 @@
 const Quizes = require('../models/quiz');
 
-// Controller to get all quizzes
 const getAllQuizzes = async (req, res) => {
   try {
     const quizzes = await Quizes.find();
@@ -10,7 +9,6 @@ const getAllQuizzes = async (req, res) => {
   }
 };
 
-// Controller to create a new quiz
 const createQuiz = async (req, res) => {
   try {
     const newQuiz = await Quizes.create(req.body);
@@ -20,7 +18,6 @@ const createQuiz = async (req, res) => {
   }
 };
 
-// Controller to get a specific quiz by ID
 const getQuizById = async (req, res) => {
   try {
     const quiz = await Quizes.findById(req.params.id);
@@ -30,7 +27,6 @@ const getQuizById = async (req, res) => {
   }
 };
 
-// Controller to update a specific quiz by ID
 const updateQuizById = async (req, res) => {
   try {
     const updatedQuiz = await Quizes.findByIdAndUpdate(
@@ -44,7 +40,6 @@ const updateQuizById = async (req, res) => {
   }
 };
 
-// Controller to delete a specific quiz by ID
 const deleteQuizById = async (req, res) => {
   try {
     await Quizes.findByIdAndRemove(req.params.id);
@@ -54,7 +49,6 @@ const deleteQuizById = async (req, res) => {
   }
 };
 
-// Controller to submit an answer to a specific question in a quiz
 const submitAnswer = async (req, res) => {
     try {
       const { quizId, questionId, answer } = req.body;

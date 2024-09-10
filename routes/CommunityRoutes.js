@@ -14,6 +14,7 @@ router.get('/getArticlesCompanyByType', communityController.getArticlesCompanyBy
 router.get('/getArticlesUserByType', communityController.getArticlesUserByType); // تحتاجه 
 router.get('/getArticlesCompanyByTypeUser/:id', communityController.getArticlesCompanyByTypeUser); // تحتاجه 
 router.get('/getArticlesCompanyByTypeCompany/:id', communityController.getArticlesCompanyByTypeCompany); // تحتاجه 
+router.put('/ubdateCommunity/:id', communityController.ubdateCommunity); // تحتاجه 
 
 
 module.exports = router;

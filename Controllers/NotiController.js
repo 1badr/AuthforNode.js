@@ -2,15 +2,9 @@ var express = require('express');
 
 const app = express();
 const http = require('http').createServer(app);
-const io = require('socket.io')(http);
 const Noti = require ('../models/Notifications');
-const CV = require ('../models/CV');
-const User = require ('../models/User');
-const Jobs = require('../models/Jobs');
 const Requests = require('../models/Requests')
-const server = require("http").createServer();
 
-/* Queries the db to fetch the count of all unread notifications */
 
 const getNotificationsCount = async (req,res) => {
 		try {

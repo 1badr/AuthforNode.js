@@ -29,7 +29,6 @@ io.on('connection', (socket) => {
     const { conversationId, sender, recipient, text } = msg;
 
     try {
-      // Save the message to the database
       const newMessage = new Messages({
         conversationId,
         sender,
@@ -38,7 +37,6 @@ io.on('connection', (socket) => {
       });
       await newMessage.save();
 
-      // Update the last message in the conversation document
       await Conversation.findByIdAndUpdate(conversationId, {
         $set: {
           'lastMessage.text': text,
@@ -47,10 +45,8 @@ io.on('connection', (socket) => {
         }
       });
 
-      // Fetch the recipient's name and image URL from the User model
       const recipientUser = await User.findById(recipient, { username: 1, imageUrl: 1 });
 
-      // Emit the message to all connected clients
       io.emit('chat message', {
         _id: newMessage._id,
         conversationId: newMessage.conversationId,
@@ -99,7 +95,6 @@ io.on('connection', (socket) => {
     }
   });  
 
-  // Fetch all messages between two users
   socket.on('fetch messages', async (params) => {
     const { conversationId } = params;
   

@@ -8,14 +8,11 @@ const getUserSaves = async (req, res) => {
   const userId = req.params.id;
 
   try {
-    // Get the user's saved jobs from the Save collection
     const userSaves = await Save.find({ IDUser: userId, state: true }, { IDblog: 1, state: 1 });
     const savedJobIds = userSaves.map((save) => save.IDblog);
 
-    // Get the job details from the Jobs collection
     const jobs = await Jobs.find({ _id: { $in: savedJobIds } });
 
-    // Combine the saved job information with the job details
     const jobDetails = await Promise.all(
       jobs.map(async (job) => {
         const savedJob = userSaves.find((save) => save.IDblog === job._id.toString());
@@ -55,7 +52,6 @@ const getUserSaves = async (req, res) => {
       const userId = req.body.userId;
       const postId = req.body.postId;
   
-      // Find the user
       const user = await User.findById(userId);
   
       if (!user) {
@@ -68,12 +64,12 @@ const getUserSaves = async (req, res) => {
         return res.status(404).json({ error: 'Post not found' });
       }
   
-      blog.saves = blog.saves || []; // تحقق من وجود قيمة مبدئية لـ blog.saves في حالة كانت undefined
+      blog.saves = blog.saves || []; 
   
       const existingSave = await Save.findOne({ IDUser: userId, IDblog: postId });
   
       if (existingSave) {
-        existingSave.state = !existingSave.state; // تغيير قيمة الحالة باستخدام عامل النفي (!)
+        existingSave.state = !existingSave.state; 
         await existingSave.save();
   
         return res.json({ message: 'Save state updated', saved: existingSave.state });
@@ -93,12 +89,10 @@ const getUserSaves = async (req, res) => {
     const blogId = req.params.id;
   
     try {
-      // Get the saves for the specified blog
       const saves = await Save.find({ IDblog: blogId, state: true }, { IDUser: 1, IDblog: 1, state: 1 });
       const userIds = saves.map((save) => save.IDUser.toString());
       const blogIds = saves.map((save) => save.IDblog.toString());
   
-      // Get the user details for the users who saved the blog
       const users = await User.find({ _id: { $in: userIds } }, {
         _id: 1,
         name: 1,
@@ -114,7 +108,6 @@ const getUserSaves = async (req, res) => {
         bio: 1,
       });
   
-      // Get the job details for the saved blogs
       const jobs = await Jobs.find({ _id: { $in: blogIds } }, {
         _id: 1,
         name: 1,

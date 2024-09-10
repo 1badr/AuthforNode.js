@@ -11,7 +11,6 @@ app.set('view engine', 'ejs');
 
 app.use(passport.initialize());
 const { client } = require('websocket');
-//const  { WebSocketServer, WebSocket } = require('ws');
 
 
 const authRoutes = require ('./routes/authRoutes');
@@ -48,7 +47,7 @@ const cors = require('cors');
 
 const corsOptions ={
     origin:'http://localhost:3000', 
-    credentials:true,            //access-control-allow-credentials:true
+    credentials:true,           
     optionSuccessStatus:200
 }
 app.use(cors(corsOptions));
@@ -58,8 +57,6 @@ mongoose.connect("mongodb://localhost:27017/levelfive", {
    useNewUrlParser: true,
    useUnifiedTopology: true
 });
-////
-/////
 
 app.use('/user',authRoutes);
 app.use('/categoery',CategoreyRoutes);
@@ -98,17 +95,15 @@ app.use(function(req, res, next) {
 
 
 ///========================================================
-//auth google provider
 app.get('/google', passport.authenticate('google', {
   scope: ['profile']
 }));
 
-// callback
 app.get('/auth/google/redirect', passport.authenticate('google'), (req, res) => {
   res.json();
 });
-//=========================================================
-// Define API routes
+
+
 app.get("/api", (req, res) => {
   res.send("API is running");
 });
@@ -116,7 +111,7 @@ app.get("/api", (req, res) => {
 
 
 app.get("/users", (req, res) => {
-  const users = getRoomUsers("room1"); // Replace "room1" with the actual room name
+  const users = getRoomUsers("room1"); 
   res.json(users);
 });
 
@@ -131,18 +126,17 @@ app.get('/mail', async (req, res) => {
         pass: 'fb1927afb97377'
       },
       tls: {
-        rejectUnauthorized: false // Add this line to disable certificate verification
+        rejectUnauthorized: false 
       }
     });
 
 
 
-    // Send mail with defined transport object
     const info = await transport.sendMail({
-      from: 'info@mailtrao.club', // Sender address
-      to: 'badr@gmail.com', // List of receivers
-      subject: 'Hello badr hussin', // Subject line
-      text: 'Hello naddooorryy', // Plain text body
+      from: 'info@mailtrao.club', 
+      to: 'badr@gmail.com', 
+      subject: 'Hello badr hussin', 
+      text: 'Hello naddooorryy', 
     });
 
     console.log('Message sent: %s', info.messageId);
@@ -185,7 +179,7 @@ const multer = require("multer");
 const path = require("path");
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads"), // cb -> callback
+  destination: (req, file, cb) => cb(null, "uploads"), 
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${Math.round(
       Math.random() * 1e9
@@ -202,7 +196,6 @@ const handleMultipartData = multer({
 
 app.post('/user', handleMultipartData, function(req, res) {
   try {
-    // تتوفر الآن بيانات النموذج والملف في `req.body` و `req.file` على التوالي
     res.json({
       body: req.body,
       file: req.file,
@@ -215,7 +208,6 @@ app.post('/user', handleMultipartData, function(req, res) {
 
 const fs = require('fs');
 
-// API endpoint لاسترداد الصورة
 app.get('/api/image', (req, res) => {
   const imageName = req.query.name;
   const imagePath = path.join(__dirname, 'uploads', imageName);

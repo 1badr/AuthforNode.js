@@ -1,5 +1,4 @@
 const mongoose = require ('mongoose');
-//badr
 const CommentsSchema = new mongoose.Schema ({
     commenterID: {type: String, ref: "User" , required: true},
     body : {

@@ -7,41 +7,15 @@ const followUser = async (req, res) => {
   try {
     const userId = req.body.userId; 
     const targetUserId = req.body.targetUserId; 
-
-    // const user = await User.findById(userId);
-
-    // if (!user) {
-    //   return res.status(404).json({ error: "User not found" });
-    // }
-
-    // // Find the target user
-    // const targetUser = await User.findById(targetUserId);
-
-    // if (!targetUser) {
-    //   return res.status(404).json({ error: "Target user not found" });
-    // }
-
-    // const isFollowing = user.following && user.following.includes(targetUserId);
     const user = await Followers.findOne({ IDUser: userId,IDFollower: targetUserId  });
-    // const targetUser = await Followers.findOne({ IDFollower: targetUserId });
 
     if (user) {
-      // const followIndex = user.following.indexOf(targetUserId);
-      // user.following.splice(followIndex, 1);
-
-      // await user.save();
-      user.following = true;
+     user.following = true;
 
       await user.save();
 
       res.json({ message: 'followed ', following:true });
-      // res.json({ message: 'Unfollowed' });
     } else {
-
-      // user.following = user.following || [];
-      // user.following.push(targetUserId);
-
-      // await user.save();
 
       const followersEntry = new Followers({
         IDUser: userId,
@@ -64,21 +38,7 @@ const unFollowUser = async (req, res) => {
   try {
     const userId = req.body.userId; 
     const targetUserId = req.body.targetUserId; 
-
-    // const user = await Followers.findOne({ IDUser: userId });
-
-    // if (!user) {
-    //   return res.status(404).json({ error: "User not found" });
-    // }
-
-    // const targetUser = await Followers.findOne({ IDFollower: targetUserId });
-
-    // if (!targetUser) {
-    //   return res.status(404).json({ error: "Target user not found" });
-    // }
-
-    // const isFollowing = user.following;
-    const follower = await Followers.findOne({
+const follower = await Followers.findOne({
       IDUser: userId,
       IDFollower: targetUserId
     }).exec();

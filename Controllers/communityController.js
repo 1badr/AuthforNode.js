@@ -85,7 +85,7 @@ const postCommu = async (req, res) => {
 
     const getCommuById = async (req, res) => {
       try {
-        const commuId = req.params.id; // استخراج الهوية (ID) من الطلب
+        const commuId = req.params.id; 
         const commu = await Community.findById(commuId);
         
         if (!commu) {
@@ -125,7 +125,7 @@ const postCommu = async (req, res) => {
 };
     const getArticlesCompanyByTypeCompany = async (req, res) => {
       try {
-        const communityId = req.params.communityId; // استرجاع الايدي حق المجتمع من قام بالاستدعاء
+        const communityId = req.params.communityId; 
     
         const articles = await Blogs.find({ type: 'company', communityId });
         return res.status(200).json({ articles });
@@ -137,7 +137,7 @@ const postCommu = async (req, res) => {
 
     const getArticlesCompanyByTypeUser = async (req, res) => {
       try {
-        const communityId = req.params.communityId; // استرجاع الايدي حق المجتمع من قام بالاستدعاء
+        const communityId = req.params.communityId; 
     
         const articles = await Blogs.find({ type: 'user', communityId });
         return res.status(200).json({ articles });
@@ -147,6 +147,23 @@ const postCommu = async (req, res) => {
       }
     };
 
+
+
+    const ubdateCommunity = (req, res) => {
+      const id = req.params.id;
+      const updatedcomm = req.body;
+    
+      Community.findByIdAndUpdate(id, updatedcomm, { new: true })
+        .then(result => {
+          res.json(result);
+        })
+        .catch(err => {
+          console.log(err);
+          res.status(500).json({ error: err.message });
+        });
+    };
+    
+  
 module.exports = {
     postCommu,
     postUsers,
@@ -160,5 +177,6 @@ module.exports = {
     getArticlesCompanyByType,
     getArticlesCompanyByTypeCompany,
     getArticlesCompanyByTypeUser,
+    ubdateCommunity
 }
 

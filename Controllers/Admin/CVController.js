@@ -115,21 +115,18 @@ const storage = multer.diskStorage({
 });
 const uploade = multer({
   storage,
-  limits: { fileSize: 1000000 * 5 }, // حد حجم الملف المسموح به (5 ميجابايت)
-}).single("cv_image"); // اسم حقل الصورة في النموذج
-
+  limits: { fileSize: 1000000 * 5 },
+}).single("cv_image"); 
 const updateCV = async (req, res) => {
-  // تحميل الصورة باستخدام multer
   uploade(req, res, async (err) => {
     if (err) {
-      // حدث خطأ أثناء تحميل الصورة
       console.error(err);
       return res.status(500).json({ error: "حدث خطأ أثناء تحميل الصورة" });
     }
 
     try {
       const { fullName, address, phone, email, languages, education, experience, skills, certificate, states, userID } = req.body;
-      const cvId = req.params.id; // معرف السيفي المراد تحديثه
+      const cvId = req.params.id; 
 
       let updatedCV = {
         fullName,
@@ -146,14 +143,11 @@ const updateCV = async (req, res) => {
       };
 
       if (req.file) {
-        // تم تحميل صورة جديدة
-        updatedCV.cv_image = req.file.filename; // اسم الملف الذي تم تخزينه في المجلد
+        updatedCV.cv_image = req.file.filename; 
       }
 
-      // تحديث بيانات السيفي
       const cv = await CV.findByIdAndUpdate(cvId, updatedCV, { new: true });
 
-      // إرجاع البيانات المحدثة للسيفي
       res.status(200).json(cv);
     } catch (err) {
       console.error('Error updating CV:', err);

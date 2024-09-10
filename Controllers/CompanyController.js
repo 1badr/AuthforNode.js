@@ -1,9 +1,8 @@
 const Jobs = require('../models/Jobs');
-const User = require('../models/User'); // استبدل المسار بالمسار الصحيح لملف النموذج UserModel
+const User = require('../models/User');
 
 const getTopFollowedCompanies = async (req, res) => {
   try {
-    // Get the top 20 most followed users
     const users = await User.find({ type: 'company' })
       .sort({ followers: -1 })
       .limit(20)
@@ -20,30 +19,32 @@ const getTopFollowedCompanies = async (req, res) => {
   }
 };
 
-async function getCompanyJobs(req, res) {
-  const companyId = req.params.companyId;
+
+const getCompanyJobs = async (req, res) => {
+  const id = req.params.id;
 
   try {
-    // const company = await User.findById(companyId);
+    // Find the user
+    const user = await User.findById(id);
 
-    // if (!company) {
-    //   return res.status(404).json({ message: 'Company not found' });
-    // }
-
-    const companyJobs = await Jobs.find({ IDUser: companyId });
-
-    if (companyJobs.length === 0) {
-      return res.status(404).json({ message: 'No jobs found for this company' });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    res.status(200).json({ jobs: companyJobs });
+    // Get all the jobs for this user
+    const userJobs = await Jobs.find({ IDUser: id });
+
+    // Return the user information and their jobs
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      image: user.image,
+      jobs: userJobs
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ error: error.message });
   }
-}
-
-
-
+};
 
   module.exports = {
     getTopFollowedCompanies,

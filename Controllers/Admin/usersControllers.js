@@ -71,9 +71,8 @@ const deleteuser = async (req,res) => {
 
 const multer = require("multer");
 
-// تعيين خيارات التخزين
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads"), // المجلد الذي سيتم تخزين الصور فيه
+  destination: (req, file, cb) => cb(null, "uploads"),
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(
       file.originalname
@@ -82,17 +81,14 @@ const storage = multer.diskStorage({
   },
 });
 
-// تكوين multer
 const upload = multer({
   storage,
-  limits: { fileSize: 1000000 * 5 }, // حد حجم الملف المسموح به (5 ميجابايت)
-}).single("image"); // اسم حقل الصورة في النموذج
+  limits: { fileSize: 1000000 * 5 }, 
+}).single("image"); 
 
 const updateUser = async (req, res) => {
-    // تحميل الصورة باستخدام multer
     upload(req, res, async (err) => {
       if (err) {
-        // حدث خطأ أثناء تحميل الصورة
         console.error(err);
         return res.status(500).json({ error: "حدث خطأ أثناء تحميل الصورة" });
       }
@@ -102,7 +98,7 @@ const updateUser = async (req, res) => {
           employeeCount,
           CreateAt,
           companyCreateAt} = req.body;
-        const userId = req.params.id; // معرف المستخدم المراد تحديثه
+        const userId = req.params.id; 
   
         let updatedUser = {
           email,
@@ -122,14 +118,11 @@ companyCreateAt
         };
   
         if (req.file) {
-          // تم تحميل صورة جديدة
-          updatedUser.image = req.file.filename; // اسم الملف الذي تم تخزينه في المجلد
+          updatedUser.image = req.file.filename; 
         }
   
-        // تحديث بيانات المستخدم
         const user = await User.findByIdAndUpdate(userId, updatedUser, { new: true });
   
-        // إرجاع البيانات المحدثة للمستخدم
         res.status(200).json({
           email: user.email,
           name: user.name,

@@ -10,7 +10,6 @@ const CV = require ('../models/CV');
 
 const server = require("http").createServer();
 
-/* Queries the db to fetch the count of all unread notifications */
 
 
 	  

@@ -203,10 +203,8 @@ const getJobsById = async (req, res) => {
       const userId = req.params.userId;
     
       try {
-        // الحصول على جميع الوظائف للمستخدم المحدد
         const jobs = await Jobs.find({ userId });
     
-        // الحصول على جميع الطلبات المرتبطة بالوظائف
         const requests = await Requests.find({ jobId: { $in: jobs.map(job => job._id) } });
     
         const response = [];
@@ -271,7 +269,6 @@ const getJobsById = async (req, res) => {
           })
         );
     
-        // Flatten the array of jobs
         const allJobs = jobsWithCompanyDetails.flat();
     
         res.status(200).json(allJobs);

@@ -9,7 +9,6 @@ const createReport = async (req, res) => {
   try {
     const { reporter, reportedID, reportType, description, evidence, resolved } = req.body;
 
-    // بحث عن المستخدم المبلغ عنه في جداول مختلفة
     let reportedEntity;
     let entityType;
     reportedEntity = await Jobs.findById(reportedID);
@@ -22,12 +21,10 @@ const createReport = async (req, res) => {
       entityType = 'comment';
     }
 
-    // إذا لم يتم العثور على المستخدم المبلغ عنه، أرجع رسالة خطأ
     if (!reportedEntity) {
       return res.status(404).json({ message: 'المستخدم المبلغ عنه غير موجود' });
     }
 
-    // إنشاء التقرير الجديد
     const report = await reporters.create({
       reporter,
       reportedID,

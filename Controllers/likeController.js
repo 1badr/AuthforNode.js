@@ -21,12 +21,10 @@ const likePost = async (req, res) => {
     const existingLike = await Like.findOne({ IDUser: userId, IDblog: postId });
 
     if (existingLike) {
-      // If the like already exists, toggle the state
       existingLike.liked = !existingLike.liked;
       await existingLike.save();
       res.json({ message: existingLike.liked ? 'Liked' : 'Unliked', liked: existingLike.liked });
     } else {
-      // If the like doesn't exist, create a new one with the desired state
       const newLike = new Like({ IDUser: userId, IDblog: blog._id, liked: true });
       await newLike.save();
       res.json({ message: 'Liked', liked: true });
